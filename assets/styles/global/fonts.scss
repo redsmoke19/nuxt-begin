@@ -1,0 +1,5 @@
+@use "mixins";
+
+@include mixins.font-face('Geologica', '../../fonts/Geologica-ExtraLight', '300');
+@include mixins.font-face('Geologica', '../../fonts/Geologica-Light', '300');
+@include mixins.font-face('Geologica', '../../fonts/Geologica-Regular', '300');

@@ -1,0 +1,39 @@
+@use "mixins";
+
+.visually-hidden {
+  @include mixins.visually-hidden;
+}
+
+.hidden-from-tablet {
+  @include mixins.tablet-desktop {
+    /* stylelint-disable-next-line declaration-no-important */
+    display: none !important;
+  }
+}
+
+.hidden-desktop-only {
+  @include mixins.desktop {
+    /* stylelint-disable-next-line declaration-no-important */
+    display: none !important;
+  }
+}
+
+.hidden-tablet-only {
+  @include mixins.tablet {
+    /* stylelint-disable-next-line declaration-no-important */
+    display: none !important;
+  }
+}
+
+.hidden-mobile-only {
+  @include mixins.mobile {
+    /* stylelint-disable-next-line declaration-no-important */
+    display: none !important;
+  }
+}
+
+.hidden-mobile-tablet {
+  @include mixins.mobile-tablet {
+    display: none !important;
+  }
+}
