@@ -12,7 +12,7 @@ export namespace InputCurrent {
     id: string
     name: string
     label?: string
-    modelValue?: string | number
+    modelValue?: string
     placeholder?: string
     errorMessage?: string
     required?: boolean

@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<InputCurrent.Model>(), {
 
 const emit = defineEmits<InputCurrent.Emits>()
 
-const model = computed<string | number>({
+const model = computed<string>({
   get() {
     return props.modelValue
   },
