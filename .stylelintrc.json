@@ -17,7 +17,6 @@
     "no-descending-specificity": null,
     "no-empty-source": null,
     "color-function-notation": "legacy",
-    "no-empty-first-line": null,
     "declaration-empty-line-before": null,
     "selector-class-pattern": null,
     "font-family-no-missing-generic-family-keyword": null,

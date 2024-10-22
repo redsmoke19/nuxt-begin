@@ -3,7 +3,7 @@ import SectionForms from '@views/SectionForms.vue'
 import { useSeoMeta } from 'nuxt/app'
 
 useSeoMeta({
-  title: 'Форма на emit и props'
+  title: 'Форма v-model'
 })
 </script>
 

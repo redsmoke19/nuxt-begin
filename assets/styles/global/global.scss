@@ -33,7 +33,7 @@ html {
   text-rendering: optimizelegibility;
 
   @media screen and (min-width: $vp-1024) and (max-width: ($vp-1920 - 1px)) {
-    font-size: functions.size-html($vp-1536);
+    font-size: functions.size-html($vp-1440);
   }
 
   //@include tablet {

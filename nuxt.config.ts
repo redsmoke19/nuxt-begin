@@ -9,7 +9,9 @@ export default defineNuxtConfig({
   alias: {
     '@img': fileURLToPath(new URL('./assets/images', import.meta.url)),
     '@icons': fileURLToPath(new URL('./assets/icons', import.meta.url)),
-    '@ui': fileURLToPath(new URL('./components/UI', import.meta.url))
+    '@ui': fileURLToPath(new URL('./components/UI', import.meta.url)),
+    '@views': fileURLToPath(new URL('./views', import.meta.url)),
+    '@vars': fileURLToPath(new URL('./assets/styles/global/variables.scss', import.meta.url))
   },
 
   css: [{ src: '@/assets/styles/index.scss', lang: 'scss' }],
@@ -19,8 +21,8 @@ export default defineNuxtConfig({
       preprocessorOptions: {
         scss: {
           additionalData: `
-            @use "@/assets/styles/global/variables.scss";
-            @use "@/assets/styles/global/mixins.scss";
+            @use "@/assets/styles/global/variables.scss" as *;
+            @use "@/assets/styles/global/mixins.scss" as *;
           `
         }
       }

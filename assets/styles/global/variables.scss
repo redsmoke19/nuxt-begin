@@ -9,7 +9,11 @@ $color-transparent: rgb(255 255 255 / 0%);
 
 // Project palette
 // для нейминга цветов используем https://www.htmlcsscolor.com/hex/334482
-
+$color-light-perp: #292d3e;
+$color-light-perp-soft: #596287;
+$color-light-perp-light: #adb8e4;
+$color-black-soft: #242424;
+$color-error: #F97583;
 
 // Высота без учета bar в android, ios
 // Для устранения бага в андроид @see https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
@@ -18,6 +22,7 @@ $ff-geologica: 'Geologica', sans-serif;
 $fz-default: 10px;
 $vp-1920: 1920px;
 $vp-1536: 1536px;
+$vp-1440: 1440px;
 $vp-1024: 1024px;
 $vp-768: 768px;
 $vp-414: 414px;

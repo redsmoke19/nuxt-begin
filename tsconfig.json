@@ -18,6 +18,8 @@
       "@img/*": ["./assets/images/*"],
       "@icons/*": ["./assets/icons/*"],
       "@ui/*": ["./components/UI/*"],
+      "@views/*": ["./views/*"],
+      "@vars": ["./assets/styles/global/variables.scss"],
     },
     "types": ["@nuxt/types", "@types/node", "@pinia/nuxt"]
   },
