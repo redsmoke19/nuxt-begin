@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import InputModel from '@ui/InputModel.vue'
+import InputModel from '~/components/Ui/InputModel.vue'
 import { computed, ref } from 'vue'
 
 interface FormsField {

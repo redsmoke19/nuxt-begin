@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import SectionForms from '@views/SectionForms.vue'
-import { useSeoMeta } from 'nuxt/app'
-
 useSeoMeta({
   title: 'Форма на emit и props'
 })
 </script>
 
 <template>
-  <SectionForms />
+  <FormSection>
+    <Form />
+  </FormSection>
 </template>
