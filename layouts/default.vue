@@ -1,15 +1,11 @@
-<script setup lang="ts">
-import Header from '~/components/Header.vue'
-</script>
-
 <template>
-  <v-layout>
+  <BaseLayout>
     <template #page-header>
       <Header />
     </template>
     <template #page-content>
-      <nuxt-page />
+      <NuxtPage />
     </template>
     <template #page-footer></template>
-  </v-layout>
+  </BaseLayout>
 </template>

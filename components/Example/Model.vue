@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import InputModel from '@ui/InputModel.vue'
-import { computed, ref } from 'vue'
-
 interface FormsField {
-  name: string
-  surname: string
-  phone: string
-  mail: string
+  name: string | number
+  surname: string | number
+  phone: string | number
+  mail: string | number
 }
 
 const isSubmit = ref<boolean>(false)
@@ -33,16 +30,16 @@ const getFullName = computed(() => {
       <div class="main-form__wrapper">
         <h2 class="main-form__title">Тренировочная форма 2</h2>
         <div class="main-form__grid">
-          <InputModel
+          <UiInputModel
             id="name"
-            v-model.capitalize="field.name"
+            v-model="field.name"
             name="name"
             label="Ваше имя"
             :required="true"
             type="text"
             placeholder="Введите свое имя"
           />
-          <InputModel
+          <UiInputModel
             id="surname"
             v-model.capitalize="field.surname"
             name="surname"
@@ -52,7 +49,7 @@ const getFullName = computed(() => {
             type="text"
             placeholder="Введите свою фамилию"
           />
-          <InputModel
+          <UiInputModel
             id="phone"
             v-model.number="field.phone"
             name="surname"
@@ -61,7 +58,7 @@ const getFullName = computed(() => {
             type="tel"
             placeholder="Введите ваш номер телефона"
           />
-          <InputModel
+          <UiInputModel
             id="mail"
             v-model="field.mail"
             name="mail"

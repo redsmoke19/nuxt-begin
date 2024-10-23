@@ -27,7 +27,7 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'comma-dangle': ['error', 'never'],
     semi: ['error', 'never'],
-    'prettier/prettier': 'error',
+    'prettier/prettier': ['error'],
     'vue/multi-word-component-names': 'off',
     'vue/no-reserved-component-names': 'off',
     'vue/no-v-html': 'off',
@@ -37,12 +37,17 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': ['off'],
     treatUndefinedAsUnspecified: 'off',
     'class-methods-use-this': 'off',
-    'global-require': 0
+    'global-require': 0,
+    '@typescript-eslint/no-namespace': 'off',
+    'import/extensions': ['error', 'never']
+  },
+  globals: {
+    useSeoMeta: true
   },
   settings: {
     'import/resolver': {
       nuxt: {
-        extensions: ['.js', '.vue', '.ts']
+        extensions: ['.js', '.ts']
       },
       typescript: {
         alwaysTryTypes: true

@@ -1,26 +1,15 @@
 <script setup lang="ts">
-import Input from '@ui/Input.vue'
-import { computed, ref } from 'vue'
+import { Input } from '@/types'
 
-const name = ref<string>()
-const surname = ref<string>()
-const mail = ref<string>()
-const phone = ref<string>()
+const state = reactive<Record<string, string>>({
+  name: '',
+  surname: '',
+  phone: '',
+  mail: ''
+})
 
-const onName = (e) => {
-  name.value = e
-}
-
-const onSurname = (e) => {
-  surname.value = e
-}
-
-const onPhoneInput = (e) => {
-  phone.value = e.replace(/\D/g, '')
-}
-
-const getFullName = computed(() => {
-  return `${name.value?.trim() || ''} ${surname.value?.trim() || ''}`
+const getFullName = computed<string>(() => {
+  return `${state.name?.trim() || ''} ${state.surname?.trim() || ''}`
 })
 </script>
 
@@ -29,52 +18,48 @@ const getFullName = computed(() => {
     <div class="main-form__wrapper">
       <h2 class="main-form__title">Тренировочная форма</h2>
       <div class="main-form__grid">
-        <Input
+        <UiInput
           id="name"
-          :model-value="name"
+          v-model="state.name"
           name="name"
-          error-message="Заполните поле"
+          placeholder="Заполните поле"
           label="Ваше имя"
-          :required="true"
-          type="text"
-          placeholder="Введите свое имя"
-          @update:on-input="onName"
+          required
+          :type="Input.Types.TEXT"
+          @click="state.name = ''"
         />
-        <Input
+        <UiInput
           id="surname"
-          :model-value="surname"
+          v-model="state.surname"
           name="surname"
           label="Ваша фамилия"
-          :required="true"
-          type="text"
+          required
+          :type="Input.Types.TEXT"
           placeholder="Введите свою фамилию"
-          @update:on-input="onSurname"
         />
-        <Input
+        <UiInput
           id="phone"
-          :model-value="phone"
+          v-model="state.phone"
           name="phone"
           label="Ваш номер телефона"
-          :required="true"
-          type="tel"
+          required
+          :type="Input.Types.PHONE"
           placeholder="Введите свой номер телефона"
-          @update:on-input="onPhoneInput"
         />
-        <Input
+        <UiInput
           id="mail"
-          :model-value="mail"
+          v-model="state.mail"
           name="mail"
           label="Ваша почта"
-          :required="true"
-          type="mail"
+          required
+          :type="Input.Types.EMAIL"
           placeholder="Введите свою почту"
-          @update:on-input="($event) => (mail = $event)"
         />
         <div class="main-form__result main-form__wide">
           <h3 class="main-form__result-title">Проверьте ваши данные:</h3>
-          <p class="main-form__result-name">ФИО: {{ getFullName ? getFullName : '' }}</p>
-          <a href="#" class="main-form__result-mail">Номер телефона: {{ phone }}</a>
-          <a href="#" class="main-form__result-mail">Почта: {{ mail }}</a>
+          <p class="main-form__result-name">ФИО: {{ getFullName }}</p>
+          <a href="#" class="main-form__result-mail">Номер телефона: {{ state.phone }}</a>
+          <a href="#" class="main-form__result-mail">Почта: {{ state.mail }}</a>
         </div>
       </div>
     </div>

@@ -1,8 +1,4 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
-import { computed } from 'vue'
-import BaseContainer from '~/packages/basis/components/BaseContainer.vue'
-
 interface RouteItem {
   name: string
   path: string
@@ -17,7 +13,7 @@ const getRotes = computed<RouteItem[]>(() => {
         path: item.path
       }
     })
-    .reverse()
+    .reverse() as RouteItem[]
 })
 </script>
 
