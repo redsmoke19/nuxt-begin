@@ -2,7 +2,6 @@ import { fileURLToPath } from 'url'
 import { defineNuxtConfig } from 'nuxt/config'
 
 export default defineNuxtConfig({
-  store: true,
   ssr: true,
   devtools: { enabled: true },
 
@@ -14,7 +13,7 @@ export default defineNuxtConfig({
     '@vars': fileURLToPath(new URL('./assets/styles/global/variables.scss', import.meta.url))
   },
 
-  css: [{ src: '@/assets/styles/index.scss', lang: 'scss' }],
+  css: ['@/assets/styles/index.scss'],
 
   vite: {
     css: {
@@ -33,7 +32,8 @@ export default defineNuxtConfig({
     // '@nuxtjs/stylelint-module',
     // '@nuxtjs/eslint-module',
     'nuxt-icons',
-    'nuxt-lazy-load'
+    'nuxt-lazy-load',
+    ['@pinia/nuxt', { disableVuex: false }]
   ],
 
   lazyLoad: {

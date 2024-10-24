@@ -23,9 +23,9 @@ const getRotes = computed<RouteItem[]>(() => {
       <nav class="header__nav">
         <ul class="header__list">
           <li v-for="(item, idx) in getRotes" :key="idx" class="header__item">
-            <nuxt-link class="header__link" active-class="header__link--active" :to="item.path">
+            <NuxtLink class="header__link" active-class="header__link--active" :to="item.path">
               Форма {{ idx + 1 }}
-            </nuxt-link>
+            </NuxtLink>
           </li>
         </ul>
       </nav>
