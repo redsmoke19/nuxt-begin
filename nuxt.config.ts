@@ -33,8 +33,11 @@ export default defineNuxtConfig({
     // '@nuxtjs/eslint-module',
     'nuxt-icons',
     'nuxt-lazy-load',
-    ['@pinia/nuxt', { disableVuex: false }]
+    ['@pinia/nuxt', { disableVuex: false }],
+    '@nuxt/icon'
   ],
+
+  plugins: ['~/plugins/sanitizeHtml.ts'],
 
   lazyLoad: {
     loadingClass: 'isImageLoading',

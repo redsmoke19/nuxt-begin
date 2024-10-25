@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { Input } from '@/types'
 
+const { $sanitizeHTML } = useNuxtApp()
+
 const props = withDefaults(defineProps<Input.Model>(), {
   label: '',
   modelValue: '',
@@ -50,7 +52,7 @@ const onClick = () => {
       :disabled="disabled"
       @click="onClick"
     />
-    <p v-if="errorMessage" class="custom-input__error">{{ errorMessage }}</p>
+    <p v-if="errorMessage" class="custom-input__error" v-html="$sanitizeHTML(errorMessage)" />
   </div>
 </template>
 
