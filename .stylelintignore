@@ -2,3 +2,4 @@
 stylelint.config.js
 .vscode
 .stylecache
+/yarn.lock

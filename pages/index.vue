@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import SectionForms from '@views/SectionForms.vue'
-import { useSeoMeta } from 'nuxt/app'
+import useUserStore from '~/stores/users'
+
+const userStore = useUserStore()
+userStore.setUserData('John Doe', 'john@example.com')
 
 useSeoMeta({
-  title: 'Форма на emit и props'
+  title: 'Форма v-model'
 })
 </script>
 
 <template>
-  <SectionForms />
+  <ExampleSection>
+    <ExampleForm />
+  </ExampleSection>
 </template>

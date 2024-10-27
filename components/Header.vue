@@ -1,8 +1,4 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
-import { computed } from 'vue'
-import BaseContainer from '~/packages/basis/components/BaseContainer.vue'
-
 interface RouteItem {
   name: string
   path: string
@@ -17,7 +13,7 @@ const getRotes = computed<RouteItem[]>(() => {
         path: item.path
       }
     })
-    .reverse()
+    .reverse() as RouteItem[]
 })
 </script>
 
@@ -27,9 +23,9 @@ const getRotes = computed<RouteItem[]>(() => {
       <nav class="header__nav">
         <ul class="header__list">
           <li v-for="(item, idx) in getRotes" :key="idx" class="header__item">
-            <nuxt-link class="header__link" active-class="header__link--active" :to="item.path">
+            <NuxtLink class="header__link" active-class="header__link--active" :to="item.path">
               Форма {{ idx + 1 }}
-            </nuxt-link>
+            </NuxtLink>
           </li>
         </ul>
       </nav>

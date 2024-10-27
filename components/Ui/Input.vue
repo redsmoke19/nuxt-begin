@@ -1,32 +1,47 @@
 <script setup lang="ts">
-import { defineProps, defineModel } from 'vue'
-import type { Input } from '~/types/components/UI/Input.ts'
+import { Input } from '@/types'
 
-const [model, mod] = defineModel({
-  set(value) {
-    if (mod.capitalize) {
-      return value.charAt(0).toUpperCase() + value.slice(1)
-    }
-    return value
+const { $sanitizeHTML } = useNuxtApp()
+
+const props = withDefaults(defineProps<Input.Model>(), {
+  label: '',
+  modelValue: '',
+  placeholder: '',
+  errorMessage: '',
+  required: true,
+  disabled: false,
+  type: Input.Types.TEXT
+})
+
+const emit = defineEmits<Input.Emits>()
+
+const model = computed<string | number>({
+  get() {
+    return props.modelValue
+  },
+  set(value: string | number) {
+    emit('update:modelValue', value)
   }
 })
 
-const {
-  type,
-  required = true,
-  name,
-  placeholder,
-  disabled = false,
-  errorMessage,
-  label,
-  id,
-  className
-} = defineProps<Input>()
+// const model = ref<string | number>('')
+
+// const onInput = (event: InputEvent) => {
+//   emit('update:modelValue', (event.target as HTMLInputElement).value)
+// }
+
+// watch(model, (value: string | number) => {
+//   emit('update:modelValue', value)
+// })
+
+const onClick = () => {
+  emit('click')
+}
 </script>
 
 <template>
-  <div class="custom-input" :class="[className, { 'is-error': errorMessage }]">
-    <label v-if="!!label" :for="id">{{ label }}</label>
+  <div class="custom-input" :class="{ 'is-error': errorMessage }">
+    <label v-if="label" :for="id" v-text="label" />
     <input
       :id="id"
       v-model="model"
@@ -35,8 +50,9 @@ const {
       :required="required"
       :placeholder="placeholder"
       :disabled="disabled"
+      @click="onClick"
     />
-    <p v-if="!!errorMessage" class="custom-input__error">{{ errorMessage }}</p>
+    <p v-if="errorMessage" class="custom-input__error" v-html="$sanitizeHTML(errorMessage)" />
   </div>
 </template>
 
@@ -49,9 +65,7 @@ const {
     font-size: 2rem;
     background-color: $color-light-perp;
     color: $color-default-white;
-    transition:
-      border-color $transition,
-      background-color $transition;
+    transition: border-color $transition, background-color $transition;
     font-family: inherit;
     font-weight: 300;
     width: 100%;
