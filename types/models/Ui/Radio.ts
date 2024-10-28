@@ -3,7 +3,6 @@ export namespace Radio {
     id: string
     name: string
     label?: string
-    checked?: boolean
     required?: boolean
     value?: string
   }

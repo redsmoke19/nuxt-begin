@@ -1,14 +1,10 @@
 <script setup lang="ts">
-import type { Checkbox } from '~/types'
-
-const { $sanitizeHTML } = useNuxtApp()
+import type { Checkbox } from '@/types'
 
 const props = withDefaults(defineProps<Checkbox.Model>(), {
   label: '',
-  checked: false,
   required: true,
-  errorMessage: '',
-  model23: ''
+  errorMessage: ''
 })
 
 const model = defineModel<boolean>('modelValue', { required: true, default: false })
@@ -26,22 +22,20 @@ const model = defineModel<boolean>('modelValue', { required: true, default: fals
 
 <template>
   <div class="custom-checkbox">
-    <input
-      :id="props.id"
-      v-model="model"
-      type="checkbox"
-      class="custom-checkbox__field visually-hidden"
-      :name="props.name"
-    />
-    <label :for="props.id" class="custom-checkbox__label">
+    <input :id="id" v-model="model" type="checkbox" class="custom-checkbox__field visually-hidden" :name="name" />
+    <label :for="id" class="custom-checkbox__label">
       <span class="custom-checkbox__icon">
-        <Icon name="stash:check-solid" />
+        <Transition>
+          <Icon v-if="model" mode="css" name="stash:check-solid" />
+        </Transition>
       </span>
       <span class="custom-checkbox__content">
         <slot />
       </span>
     </label>
-    <p v-if="errorMessage" class="custom-checkbox__error" v-text="$sanitizeHTML(errorMessage)" />
+    <Transition>
+      <p v-if="errorMessage" class="custom-checkbox__error" v-html="$sanitizeHTML(errorMessage)" />
+    </Transition>
   </div>
 </template>
 
@@ -54,10 +48,6 @@ const model = defineModel<boolean>('modelValue', { required: true, default: fals
   &__field:checked + .custom-checkbox__label {
     .custom-checkbox__icon {
       border-color: $color-default-white;
-
-      span {
-        opacity: 1;
-      }
     }
   }
 
@@ -90,8 +80,6 @@ const model = defineModel<boolean>('modelValue', { required: true, default: fals
     span {
       width: 100%;
       height: 100%;
-      transition: opacity $transition;
-      opacity: 0;
     }
   }
 
@@ -121,6 +109,16 @@ const model = defineModel<boolean>('modelValue', { required: true, default: fals
     &.is-invalid {
       color: $color-error;
     }
+  }
+
+  .v-enter-active,
+  .v-leave-active {
+    transition: opacity $transition;
+  }
+
+  .v-enter-from,
+  .v-leave-to {
+    opacity: 0;
   }
 }
 </style>

@@ -34,8 +34,16 @@ export default defineNuxtConfig({
     'nuxt-icons',
     'nuxt-lazy-load',
     ['@pinia/nuxt', { disableVuex: false }],
-    '@nuxt/icon'
+    '@nuxt/icon',
+    '@primevue/nuxt-module'
   ],
+
+  primevue: {
+    autoImport: true,
+    components: {
+      prefix: 'Prime'
+    }
+  },
 
   plugins: ['~/plugins/sanitizeHtml.ts'],
 

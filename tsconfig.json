@@ -18,16 +18,11 @@
       "@/*": ["./*"],
       "@img/*": ["./assets/images/*"],
       "@icons/*": ["./assets/icons/*"],
-      "@models/*": ["./core/models/*"],
-      "@fabrics/*": ["./core/fabrics/*"],
-      "@adapters/*": ["./core/adapters/*"],
-      "@configs/*": ["./core/configs/*"],
-      "@api/*": ["./core/api/*"],
       "@services/*": ["./core/services/*"],
       "#app": ["./node_modules/nuxt/dist/app"],
       "#app/*": ["./node_modules/nuxt/dist/app/*"]
     },
-    "types": ["@nuxt/types", "@types/node", "@pinia/nuxt"],
+    "types": ["@nuxt/types", "@types/node", "@pinia/nuxt", "./types/plugins"],
     "typeRoots": ["./types"]
   },
   "exclude": ["node_modules", "dist"]

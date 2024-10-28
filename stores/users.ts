@@ -1,15 +1,19 @@
 import { defineStore } from 'pinia'
+import { ref } from 'vue'
 
-const useUserStore = defineStore('user', {
-  state: () => ({
-    name: '',
-    email: ''
-  }),
-  actions: {
-    setUserData(name: string, email: string) {
-      this.name = name
-      this.email = email
-    }
+const useUserStore = defineStore('user', () => {
+  const name = ref('')
+  const email = ref('')
+
+  function setUserData(newName: string, newEmail: string) {
+    name.value = newName
+    email.value = newEmail
+  }
+
+  return {
+    name,
+    email,
+    setUserData
   }
 })
 

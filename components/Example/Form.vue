@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Input } from '~/types'
+import { Input } from '@/types'
 
 interface FormsField {
   name: string
@@ -8,32 +8,36 @@ interface FormsField {
   mail: string
   checkbox: boolean
   radio: string
+  select: string
 }
 
 const isSubmit = ref<boolean>(false)
 
-const field = reactive<FormsField>({
+const formState = reactive<FormsField>({
   name: '',
   surname: '',
   phone: '',
   mail: '',
   checkbox: false,
-  radio: ''
+  radio: 'idiot',
+  select: ''
 })
+
+const selectOptions = ['Вариант первый', 'Вариант второй', 'Вариант третий', 'Вариант четвертый', 'Вариант пятый']
 
 const onSubmit = (e: Event) => {
   const form = e.target as HTMLFormElement
   isSubmit.value = true
   const formData = new FormData()
-  formData.append('name', field.name)
-  formData.append('surname', field.surname)
-  formData.append('phone', field.phone)
-  formData.append('mail', field.mail)
+  formData.append('name', formState.name)
+  formData.append('surname', formState.surname)
+  formData.append('phone', formState.phone)
+  formData.append('mail', formState.mail)
   console.log((form.elements.namedItem('name') as HTMLInputElement).value)
 }
 
 const getFullName = computed<string>(() => {
-  return `${field.name?.trim() || ''} ${field.surname?.trim() || ''}`
+  return `${formState.name?.trim() || ''} ${formState.surname?.trim() || ''}`
 })
 </script>
 
@@ -45,17 +49,17 @@ const getFullName = computed<string>(() => {
         <div class="main-form__grid">
           <UiInput
             id="name"
-            v-model="field.name"
+            v-model="formState.name"
             name="name"
             label="Ваше имя"
             :required="true"
             :type="Input.Types.TEXT"
             placeholder="Введите свое имя"
-            @click="field.name = ''"
+            @click="formState.name = ''"
           />
           <UiInput
             id="surname"
-            v-model.capitalize="field.surname"
+            v-model.capitalize="formState.surname"
             name="surname"
             error-message="Заполните поле"
             label="Ваша фамилия"
@@ -65,7 +69,7 @@ const getFullName = computed<string>(() => {
           />
           <UiInput
             id="phone"
-            v-model.number="field.phone"
+            v-model.number="formState.phone"
             name="surname"
             label="Ваш телефон"
             :required="true"
@@ -74,7 +78,7 @@ const getFullName = computed<string>(() => {
           />
           <UiInput
             id="mail"
-            v-model="field.mail"
+            v-model="formState.mail"
             name="mail"
             label="Ваша почта"
             :required="true"
@@ -84,18 +88,21 @@ const getFullName = computed<string>(() => {
           <div class="main-form__group main-form__wide">
             <h3 class="main-form__group-title">Укажите ваш пол</h3>
             <div class="main-form__radio-group">
-              <UiRadio id="male" v-model="field.radio" name="gender" value="male" label="Мужской" />
-              <UiRadio id="female" v-model="field.radio" name="gender" value="female" label="Женский" />
-              <UiRadio id="idiot" v-model="field.radio" name="gender" value="idiot" label="Квадробер" />
+              <UiRadio id="male" v-model="formState.radio" name="gender" value="male" label="Мужской" />
+              <UiRadio id="female" v-model="formState.radio" name="gender" value="female" label="Женский" />
+              <UiRadio id="idiot" v-model="formState.radio" name="gender" value="idiot" label="Квадробер" />
             </div>
+          </div>
+          <div class="main-form__select">
+            <UiSelect v-model="formState.select" :options="selectOptions" />
           </div>
         </div>
         <div class="main-form__footer">
           <UiCheckbox
             id="agree"
-            v-model="field.checkbox"
+            v-model="formState.checkbox"
             name="agree"
-            :error-message="field.checkbox ? '' : 'Необходимо дать свое согласие'"
+            :error-message="formState.checkbox ? '' : 'Необходимо дать свое согласие'"
           >
             Принимаю пользовательское соглашение
           </UiCheckbox>
@@ -109,16 +116,19 @@ const getFullName = computed<string>(() => {
         ФИО: <span v-if="isSubmit">{{ getFullName }}</span>
       </p>
       <a href="#" class="main-form__result-mail">
-        Номер телефона: <span v-if="isSubmit">{{ field.phone }}</span>
+        Номер телефона: <span v-if="isSubmit">{{ formState.phone }}</span>
       </a>
       <a href="#" class="main-form__result-mail">
-        Почта: <span v-if="isSubmit">{{ field.mail }}</span>
+        Почта: <span v-if="isSubmit">{{ formState.mail }}</span>
       </a>
       <p class="main-form__result-note">
-        Пользовательское соглашение <b>{{ field.checkbox ? 'принято' : 'не принято' }}</b>
+        Пользовательское соглашение <b>{{ formState.checkbox ? 'принято' : 'не принято' }}</b>
       </p>
       <p class="main-form__result-note">
-        Ваш пол: <b>{{ field.radio }}</b>
+        Ваш пол: <b>{{ formState.radio }}</b>
+      </p>
+      <p class="main-form__result-note">
+        Вы выбрали: <b>{{ formState.select }}</b>
       </p>
     </div>
   </div>

@@ -3,7 +3,6 @@ export namespace Checkbox {
     id: string
     name: string
     label?: string
-    checked?: boolean
     required?: boolean
     errorMessage?: string
   }

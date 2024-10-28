@@ -12,6 +12,7 @@
     "@iconify-json/stash": "^1.2.1",
     "@iconify-json/uil": "^1.2.1",
     "@pinia/nuxt": "^0.4.11",
+    "@primevue/themes": "^4.1.1",
     "dompurify": "^3.1.7",
     "jsdom": "^25.0.1",
     "lodash": "^4.17.21",
@@ -20,6 +21,7 @@
     "nuxt-lazy-load": "^3.0.4",
     "pathe": "^1.1.2",
     "pinia": "^2.1.4",
+    "primevue": "^4.1.1",
     "vue": "^3.3.8"
   },
   "devDependencies": {
@@ -33,6 +35,7 @@
     "@nuxtjs/eslint-module": "^4.1.0",
     "@nuxtjs/style-resources": "^1.2.1",
     "@nuxtjs/stylelint-module": "^5.1.0",
+    "@primevue/nuxt-module": "^4.1.1",
     "@types/dompurify": "^3.0.5",
     "@types/jsdom": "^21.1.7",
     "@types/node": "^18",
