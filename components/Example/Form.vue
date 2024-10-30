@@ -94,7 +94,7 @@ const getFullName = computed<string>(() => {
             </div>
           </div>
           <div class="main-form__select">
-            <UiSelect v-model="formState.select" :options="selectOptions" />
+            <UiSelect v-model="formState.select" :options="selectOptions" filter />
           </div>
         </div>
         <div class="main-form__footer">

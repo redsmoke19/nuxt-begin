@@ -1,20 +1,21 @@
 <script setup lang="ts">
+import type { Select } from '@/types'
 import { useTemplateRef } from 'vue'
 
-interface SelectProps {
-  modelValue: string
-  placeholder?: string
-  options: string[]
-}
-
 // const { modelValue = '', placeholder = 'Выберите вариант', options = () => [] } = defineProps<SelectProps>() // TODO: Как правильно объявить, что options это массив в деструкторизации?
-const { modelValue = '', placeholder = 'Выберите вариант', options = [] as string[] } = defineProps<SelectProps>() // TODO: Прикольно... разобрался) Но блять теперь я путаюсь, если вот так делать деструкторизацию, то не нужно писать value.options достаточно просто options
+const {
+  modelValue = '',
+  placeholder = 'Выберите вариант',
+  options = [] as string[],
+  filter = false
+} = defineProps<Select.Model>() // TODO: Прикольно... разобрался) Но блять теперь я путаюсь, если вот так делать деструкторизацию, то не нужно писать value.options достаточно просто options
 // const props = withDefaults(defineProps<SelectProps>(), {
 //   modelValue: '',
 //   placeholder: 'Выберите вариант',
 //   options: () => []
 // })
-const emit = defineEmits<{ (event: 'update:modelValue', value: string | null): void }>()
+// const emit = defineEmits<{ (event: 'update:modelValue', value: string | null): void }>()
+const emit = defineEmits<Select.Emits>()
 
 const isOptionsOpen = ref<boolean>(false)
 // const optionsMenu = ref<HTMLElement | null>(null) // TODO: Спросить у Артема, правильно ли это? или нужно через useTemplateRef?
@@ -92,7 +93,7 @@ onBeforeUnmount(() => {
     </div>
     <Transition name="fade">
       <div v-if="isOptionsOpen" ref="options-menu" class="custom-select__options">
-        <div class="custom-select__input">
+        <div v-if="filter" class="custom-select__input">
           <input v-model="searchOptionState" class="custom-select__field" type="text" placeholder="Поиск" />
           <Icon mode="svg" name="ei:search" />
         </div>
