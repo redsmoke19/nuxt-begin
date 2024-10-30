@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Input } from '@/types'
+import { Input, Button } from '@/types'
 
 interface FormsField {
   name: string
@@ -33,6 +33,8 @@ const onSubmit = (e: Event) => {
   formData.append('surname', formState.surname)
   formData.append('phone', formState.phone)
   formData.append('mail', formState.mail)
+  formData.append('gender', formState.radio)
+  formData.append('options', formState.select)
   console.log((form.elements.namedItem('name') as HTMLInputElement).value)
 }
 
@@ -96,6 +98,7 @@ const getFullName = computed<string>(() => {
           <div class="main-form__select">
             <UiSelect v-model="formState.select" :options="selectOptions" filter />
           </div>
+          <PrimeSelect v-model="formState.select" :options="selectOptions" />
         </div>
         <div class="main-form__footer">
           <UiCheckbox
@@ -106,7 +109,7 @@ const getFullName = computed<string>(() => {
           >
             Принимаю пользовательское соглашение
           </UiCheckbox>
-          <button class="main-form__button main-form__wide" type="submit">Отправить форму</button>
+          <UiButton text="Отправить форму" class="main-form__button" :type="Button.Types.SUBMIT" :mods="['primary']" />
         </div>
       </div>
     </form>
@@ -215,21 +218,7 @@ const getFullName = computed<string>(() => {
 
   &__button {
     width: 30rem;
-    border: none;
-    background-color: $color-light-perp-light;
-    padding: 1.5rem;
-    border-radius: 1.5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.6rem;
     margin: 4rem 0 0;
-    cursor: pointer;
-    transition: background-color $transition;
-
-    @include hover-focus {
-      background-color: rgba($color-light-perp-light, 0.8);
-    }
   }
 }
 </style>
