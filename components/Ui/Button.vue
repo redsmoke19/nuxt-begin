@@ -1,14 +1,10 @@
 <script setup lang="ts">
 import { Button } from '@/types'
+import BaseLink from '~/components/Base/Link.vue'
 
-const {
-  text = '',
-  mods = [] as string[],
-  url,
-  type = Button.Types.BUTTON
-} = defineProps<Button.Model>()
+const { text = '', mods = [] as string[], url, type = Button.Types.BUTTON } = defineProps<Button.Model>()
 
-const isTag = computed(() => (url ? 'a' : 'button'))
+const isTag = computed(() => (url ? BaseLink : 'button'))
 // const computedClass = computed<string[]>(() => ['btn', mods.map((mod: string) => `btn--${mod}`)])
 const computedClass = computed<string[]>(() => {
   const classes = ['btn']
@@ -22,10 +18,8 @@ const computedClass = computed<string[]>(() => {
 </script>
 
 <template>
-  <component :is="isTag" :href="url" :class="computedClass" :type="url ? undefined : type">
-    <slot>
-      <span class="button__text" v-html="$sanitizeHTML(text)" />
-    </slot>
+  <component :is="isTag" :url="url" :class="computedClass" :type="url ? undefined : type" :text="$sanitizeHTML(text)">
+    <span class="button__text" v-html="$sanitizeHTML(text)" />
   </component>
 </template>
 

@@ -68,7 +68,7 @@ const getFullName = computed<string>(() => {
   <div class="main-form">
     <form class="main-form__form" action="#" method="post" @submit.prevent="onSubmit">
       <div class="main-form__wrapper">
-        <h2 class="main-form__title">Тренировочная форма 2</h2>
+        <h2 class="main-form__title">Тренировочная форма</h2>
         <div class="main-form__grid">
           <UiInput
             id="name"
