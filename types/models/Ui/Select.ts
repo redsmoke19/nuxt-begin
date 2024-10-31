@@ -1,17 +1,17 @@
 export namespace Select {
+  export type Option = {
+    id: string | number
+    value: string
+  }
+
   export interface Model {
-    modelValue: string
+    modelValue: Option | null
     placeholder?: string
-    options: string[]
+    options: Option[]
     filter?: boolean
   }
 
-  export interface Option {
-    id: string
-    label: string
-  }
-
   export interface Emits {
-    (event: 'update:modelValue', value: string | null): void
+    (event: 'update:modelValue', value: Option | null): void
   }
 }

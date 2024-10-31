@@ -3,32 +3,23 @@ import type { Select } from '@/types'
 import { useTemplateRef } from 'vue'
 
 const {
-  modelValue = '',
+  modelValue = null,
   placeholder = 'Выберите вариант',
-  options = [] as string[],
+  options = [] as Select.Option[],
   filter = false
 } = defineProps<Select.Model>()
 
 const emit = defineEmits<Select.Emits>()
 
 const isOptionsOpen = ref<boolean>(false)
-const activeOption = ref<string | null>(null)
+const activeOption = ref<Select.Option | null>(null)
 const searchOptionState = ref<string>('')
 const optionsMenu = useTemplateRef<HTMLDivElement>('options-menu')
 
-const optionsWithId = computed<Select.Option[]>(() => {
-  return options.map((label, index) => {
-    return {
-      id: `options-${index}-${Date.now()}`,
-      label
-    }
-  })
-})
-
 // NOTE: Далее я фильтрую элементы на основе v-model, который получаю из инпута и этот же массив я отрисовываю в шаблоне
 const filteredOptions = computed<Select.Option[]>(() => {
-  return optionsWithId.value.filter((option: Select.Option) =>
-    option.label.toLowerCase().includes(searchOptionState.value.toLowerCase())
+  return options.filter((option: Select.Option) =>
+    option.value.toLowerCase().includes(searchOptionState.value.toLowerCase())
   )
 })
 
@@ -51,9 +42,9 @@ const toggleOptions = (): void => {
 }
 
 // NOTE: Тут получаю активный выбранный элемент по id и его value передаю в эмит
-const getOptions = (option: { id: string; label: string }) => {
-  activeOption.value = option.id
-  emit('update:modelValue', option.label)
+const onOptionClick = (option: Select.Option) => {
+  activeOption.value = option
+  // emit('update:modelValue', option)
   closeOptions()
 }
 
@@ -63,6 +54,11 @@ const handleClickOutside = (event: Event) => {
     closeOptions()
   }
 }
+
+// NOTE: Просто для примера работы вотчера
+watch(activeOption, (newValue) => {
+  emit('update:modelValue', newValue)
+})
 
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
@@ -76,9 +72,10 @@ onBeforeUnmount(() => {
 <template>
   <div class="custom-select">
     <div :class="['custom-select__label', { 'is-open': isOptionsOpen }]" @click.stop="toggleOptions">
-      <span :class="['custom-select__label-field', { 'is-placeholder': !modelValue }]">
-        {{ modelValue ? modelValue : placeholder }}
-      </span>
+      <span
+        :class="['custom-select__label-field', { 'is-placeholder': !modelValue }]"
+        v-text="modelValue?.value ?? placeholder"
+      />
       <span class="custom-select__icon">
         <Icon mode="svg" name="ri:arrow-down-s-line" />
       </span>
@@ -93,10 +90,10 @@ onBeforeUnmount(() => {
           <li
             v-for="option in filteredOptions"
             :key="option.id"
-            :class="['custom-select__item', { 'is-active': activeOption === option.id }]"
-            @click="getOptions(option)"
+            :class="['custom-select__item', { 'is-active': activeOption?.id === option.id }]"
+            @click="onOptionClick(option)"
           >
-            <span class="custom-select__option" v-text="$sanitizeHTML(option.label)" />
+            <span class="custom-select__option" v-text="$sanitizeHTML(option.value)" />
           </li>
         </ul>
       </div>

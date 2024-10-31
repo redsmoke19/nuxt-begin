@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Input, Button } from '@/types'
+import type { Select } from '@/types'
 
 interface FormsField {
   name: string
@@ -8,7 +9,7 @@ interface FormsField {
   mail: string
   checkbox: boolean
   radio: string
-  select: string
+  select: Select.Option | null
 }
 
 const isSubmit = ref<boolean>(false)
@@ -20,10 +21,31 @@ const formState = reactive<FormsField>({
   mail: '',
   checkbox: false,
   radio: 'idiot',
-  select: ''
+  select: null
 })
 
-const selectOptions = ['Вариант первый', 'Вариант второй', 'Вариант третий', 'Вариант четвертый', 'Вариант пятый']
+const selectOptions = [
+  {
+    id: 1,
+    value: 'Вариант первый'
+  },
+  {
+    id: 2,
+    value: 'Вариант второй'
+  },
+  {
+    id: 3,
+    value: 'Вариант третий'
+  },
+  {
+    id: 4,
+    value: 'Вариант четвертый'
+  },
+  {
+    id: 5,
+    value: 'Вариант пятый'
+  }
+]
 
 const onSubmit = (e: Event) => {
   const form = e.target as HTMLFormElement
@@ -34,7 +56,6 @@ const onSubmit = (e: Event) => {
   formData.append('phone', formState.phone)
   formData.append('mail', formState.mail)
   formData.append('gender', formState.radio)
-  formData.append('options', formState.select)
   console.log((form.elements.namedItem('name') as HTMLInputElement).value)
 }
 
@@ -130,7 +151,7 @@ const getFullName = computed<string>(() => {
         Ваш пол: <b>{{ formState.radio }}</b>
       </p>
       <p class="main-form__result-note">
-        Вы выбрали: <b>{{ formState.select }}</b>
+        Вы выбрали: <b>{{ formState.select?.value ?? '' }}</b>
       </p>
     </div>
   </div>
