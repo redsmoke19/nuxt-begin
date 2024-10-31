@@ -4,19 +4,25 @@ import { Button } from '@/types'
 const {
   text = '',
   mods = [] as string[],
-  className = '',
-  url = '',
+  url,
   type = Button.Types.BUTTON
 } = defineProps<Button.Model>()
 
 const isTag = computed(() => (url ? 'a' : 'button'))
-const computedHref = computed(() => url || undefined)
-const computedType = computed(() => (url ? undefined : type))
-const computedClass = computed(() => ['btn', className, mods.map((mod) => `btn--${mod}`)])
+// const computedClass = computed<string[]>(() => ['btn', mods.map((mod: string) => `btn--${mod}`)])
+const computedClass = computed<string[]>(() => {
+  const classes = ['btn']
+
+  if (mods) {
+    classes.push(...mods.map((mod: string) => `btn--${mod}`))
+  }
+
+  return classes
+})
 </script>
 
 <template>
-  <component :is="isTag" :href="computedHref" :class="computedClass" :type="computedType">
+  <component :is="isTag" :href="url" :class="computedClass" :type="url ? undefined : type">
     <slot>
       <span class="button__text" v-html="$sanitizeHTML(text)" />
     </slot>

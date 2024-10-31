@@ -1,13 +1,13 @@
 export namespace Button {
   export enum Types {
     BUTTON = 'button',
-    SUBMIT = 'submit'
+    SUBMIT = 'submit',
+    RESET = 'reset'
   }
 
   export interface Model {
     mods?: string[]
     text?: string
-    className?: string
     url?: string
     type?: Types
   }

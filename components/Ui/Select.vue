@@ -2,29 +2,21 @@
 import type { Select } from '@/types'
 import { useTemplateRef } from 'vue'
 
-// const { modelValue = '', placeholder = 'Выберите вариант', options = () => [] } = defineProps<SelectProps>() // TODO: Как правильно объявить, что options это массив в деструкторизации?
 const {
   modelValue = '',
   placeholder = 'Выберите вариант',
   options = [] as string[],
   filter = false
-} = defineProps<Select.Model>() // TODO: Прикольно... разобрался) Но блять теперь я путаюсь, если вот так делать деструкторизацию, то не нужно писать value.options достаточно просто options
-// const props = withDefaults(defineProps<SelectProps>(), {
-//   modelValue: '',
-//   placeholder: 'Выберите вариант',
-//   options: () => []
-// })
-// const emit = defineEmits<{ (event: 'update:modelValue', value: string | null): void }>()
+} = defineProps<Select.Model>()
+
 const emit = defineEmits<Select.Emits>()
 
 const isOptionsOpen = ref<boolean>(false)
-// const optionsMenu = ref<HTMLElement | null>(null) // TODO: Спросить у Артема, правильно ли это? или нужно через useTemplateRef?
-const optionsMenu = useTemplateRef<HTMLDivElement>('options-menu')
 const activeOption = ref<string | null>(null)
 const searchOptionState = ref<string>('')
+const optionsMenu = useTemplateRef<HTMLDivElement>('options-menu')
 
-// NOTE: Этот computed нужен для того, чтобы присвоить уникальные id для каждого элемента опций, для того, чтобы в дальнейшем можно было обратиться к нему по id и сделать активным нужный элемент
-const optionsWithId = computed(() => {
+const optionsWithId = computed<Select.Option[]>(() => {
   return options.map((label, index) => {
     return {
       id: `options-${index}-${Date.now()}`,
@@ -34,8 +26,8 @@ const optionsWithId = computed(() => {
 })
 
 // NOTE: Далее я фильтрую элементы на основе v-model, который получаю из инпута и этот же массив я отрисовываю в шаблоне
-const filteredOptions = computed(() => {
-  return optionsWithId.value.filter((option) =>
+const filteredOptions = computed<Select.Option[]>(() => {
+  return optionsWithId.value.filter((option: Select.Option) =>
     option.label.toLowerCase().includes(searchOptionState.value.toLowerCase())
   )
 })
