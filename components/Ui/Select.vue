@@ -15,6 +15,7 @@ const isOptionsOpen = ref<boolean>(false)
 const activeOption = ref<Select.Option | null>(null)
 const searchOptionState = ref<string>('')
 const optionsMenu = useTemplateRef<HTMLDivElement>('options-menu')
+const focusedOptionIndex = ref<number>(-1)
 
 // NOTE: Далее я фильтрую элементы на основе v-model, который получаю из инпута и этот же массив я отрисовываю в шаблоне
 const filteredOptions = computed<Select.Option[]>(() => {
@@ -31,6 +32,7 @@ const openOptions = (): void => {
 const closeOptions = (): void => {
   isOptionsOpen.value = false
   searchOptionState.value = ''
+  focusedOptionIndex.value = -1
 }
 
 const toggleOptions = (): void => {
@@ -55,6 +57,129 @@ const handleClickOutside = (event: Event) => {
   }
 }
 
+const onBlur = (event: Event): void => {
+  emit('blur', event)
+}
+
+// NOTE: Эта функция проверяет, является ли переданный символ одиночным и отображаемым (не пробелом или невидимым символом, за исключением пробела).
+const isPrintableCharacter = (char: string): boolean => {
+  return char.length === 1 && !!char.match(/\S| /)
+}
+
+// const findLastIndex = <T>(
+//   array: T[],
+//   predicate: (value: T, index: number, array: T[]) => boolean
+// ): number => {
+//   for (let i = array.length - 1; i >= 0; i--) {
+//     if (predicate(array[i], i, array)) {
+//       return i;
+//     }
+//   }
+//   return -1;
+// }
+
+// NOTE: Оставил пока так, потому что, возможно, первый индекс не будет равен первому элементу массива и сюда добавлю функцию предиката, что бы проверить это!
+const findFirstOptionIndex = computed<number>(() => {
+  return options.findIndex((option) => option)
+})
+
+const findLastOptionIndex = (arr: any) => {
+  return arr.length > 0 ? arr.length - 1 : -1
+}
+
+const changeFocusedOptionIndex = (index: number): void => {
+  if (focusedOptionIndex.value !== index) {
+    focusedOptionIndex.value = index
+  }
+}
+
+const findNextOptionIndex = (index: number): number => {
+  const matchedOptionIndex = index < options.length - 1 ? options.slice(index + 1).findIndex((option) => option) : -1
+
+  return matchedOptionIndex > -1 ? matchedOptionIndex + index + 1 : index
+}
+
+const findPrevOptionIndex = (index: number): number => {
+  const matchedOptionIndex = index > 0 ? findLastOptionIndex(options.slice(0, index)) : -1
+
+  return matchedOptionIndex > -1 ? matchedOptionIndex : index
+}
+
+const onArrowDownKey = (event: Event) => {
+  if (!isOptionsOpen.value) {
+    openOptions()
+  } else {
+    const optionIndex =
+      focusedOptionIndex.value !== -1 ? findNextOptionIndex(focusedOptionIndex.value) : findFirstOptionIndex.value
+    changeFocusedOptionIndex(optionIndex)
+  }
+  event.preventDefault()
+}
+
+const onArrowUpKey = (event: Event) => {
+  if (!isOptionsOpen.value) {
+    openOptions()
+  } else {
+    const optionIndex =
+      focusedOptionIndex.value !== -1 ? findPrevOptionIndex(focusedOptionIndex.value) : findLastOptionIndex(options)
+    changeFocusedOptionIndex(optionIndex)
+    event.preventDefault()
+  }
+}
+
+const onEnterKey = (event: Event): void => {
+  if (!isOptionsOpen.value) {
+    openOptions()
+  } else {
+    if (focusedOptionIndex.value !== -1) {
+      activeOption.value = options[focusedOptionIndex.value]
+    }
+    closeOptions()
+  }
+  event.preventDefault()
+}
+
+const onEscapeKey = (event: Event): void => {
+  if (isOptionsOpen.value) {
+    closeOptions()
+    event.preventDefault()
+    event.stopPropagation()
+  }
+}
+
+const onKeyDown = (event: KeyboardEvent): void => {
+  const metaKey = event.metaKey || event.ctrlKey
+
+  switch (event.code) {
+    case 'ArrowDown':
+      onArrowDownKey(event)
+      break
+    case 'ArrowUp':
+      onArrowUpKey(event)
+      break
+    case 'Tab':
+      if (isOptionsOpen.value) {
+        closeOptions()
+      }
+      break
+    case 'Enter':
+      onEnterKey(event)
+      break
+    case 'Space':
+      onEnterKey(event)
+      break
+    case 'Escape':
+      onEscapeKey(event)
+      break
+    default:
+      // NOTE: Тут если что можно на любой символ открывать кроме мета клавиш
+      // if (!metaKey && isPrintableCharacter(event.key)) {
+      //   toggleOptions()
+      // }
+      break
+  }
+}
+
 // NOTE: Просто для примера работы вотчера
 watch(activeOption, (newValue) => {
   emit('update:modelValue', newValue)
@@ -74,6 +199,9 @@ onBeforeUnmount(() => {
     <div :class="['custom-select__label', { 'is-open': isOptionsOpen }]" @click.stop="toggleOptions">
       <span
         :class="['custom-select__label-field', { 'is-placeholder': !modelValue }]"
+        tabindex="0"
+        @keydown="onKeyDown"
+        @blur="onBlur"
         v-text="modelValue?.value ?? placeholder"
       />
       <span class="custom-select__icon">
@@ -88,9 +216,12 @@ onBeforeUnmount(() => {
         </div>
         <ul class="custom-select__list">
           <li
-            v-for="option in filteredOptions"
+            v-for="(option, idx) in filteredOptions"
             :key="option.id"
-            :class="['custom-select__item', { 'is-active': activeOption?.id === option.id }]"
+            :class="[
+              'custom-select__item',
+              { 'is-active': activeOption?.id === option.id, 'is-focus': focusedOptionIndex === idx }
+            ]"
             @click="onOptionClick(option)"
           >
             <span class="custom-select__option" v-text="$sanitizeHTML(option.value)" />
@@ -121,7 +252,11 @@ onBeforeUnmount(() => {
       border-color: $color-default-white;
     }
 
-    @include hover-focus {
+    @include hover {
+      border-color: $color-default-white;
+    }
+
+    &:focus-within {
       border-color: $color-default-white;
     }
   }
@@ -133,6 +268,10 @@ onBeforeUnmount(() => {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: clip;
+
+    &:focus {
+      outline: none;
+    }
 
     &.is-placeholder {
       color: #a1a1a1;
@@ -223,7 +362,11 @@ onBeforeUnmount(() => {
       color: $color-default-black;
     }
 
-    @include hover-focus {
+    &.is-focus {
+      background-color: #3a3a3a;
+    }
+
+    @include hover {
       &:not(.is-active) {
         background-color: #3a3a3a;
       }

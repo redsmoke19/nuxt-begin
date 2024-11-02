@@ -13,5 +13,6 @@ export namespace Select {
 
   export interface Emits {
     (event: 'update:modelValue', value: Option | null): void
+    (event: 'blur', e: Event): void
   }
 }

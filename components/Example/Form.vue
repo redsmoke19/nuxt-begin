@@ -117,7 +117,7 @@ const getFullName = computed<string>(() => {
             </div>
           </div>
           <div class="main-form__select">
-            <UiSelect v-model="formState.select" :options="selectOptions" filter />
+            <UiSelect v-model="formState.select" :options="selectOptions" />
           </div>
         </div>
         <div class="main-form__footer">
@@ -188,6 +188,7 @@ const getFullName = computed<string>(() => {
   &__group-title {
     font-size: 16px;
     color: $color-default-white;
+    margin: 0 0 20px;
   }
 
   &__radio-group {

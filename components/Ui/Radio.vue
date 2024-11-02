@@ -55,6 +55,16 @@ const model = defineModel<string>('modelValue', { default: '' })
     }
   }
 
+  &__field {
+    @include focus {
+      + .custom-radio__label {
+        .custom-radio__content {
+          color: $color-light-perp-soft;
+        }
+      }
+    }
+  }
+
   &__label {
     display: flex;
     align-items: center;
@@ -103,6 +113,7 @@ const model = defineModel<string>('modelValue', { default: '' })
     line-height: 130%;
     letter-spacing: -0.01em;
     color: $color-default-white;
+    transition: color $transition;
   }
 }
 </style>

@@ -41,5 +41,9 @@ const computedClass = computed<string[]>(() => {
   @include hover-focus {
     background-color: rgba($color-light-perp-light, 0.8);
   }
+
+  &:focus {
+    outline: none;
+  }
 }
 </style>

@@ -51,6 +51,16 @@ const model = defineModel<boolean>('modelValue', { required: true, default: fals
     }
   }
 
+  &__field {
+    @include focus {
+      + .custom-checkbox__label {
+        .custom-checkbox__content {
+          color: $color-light-perp-soft;
+        }
+      }
+    }
+  }
+
   &__label {
     display: flex;
     align-items: center;
@@ -58,7 +68,7 @@ const model = defineModel<boolean>('modelValue', { required: true, default: fals
     gap: 0.8rem;
 
     @include hover {
-      .custom-toggle__icon {
+      .custom-checkbox__icon {
         border-color: $color-default-white;
       }
     }
@@ -89,6 +99,7 @@ const model = defineModel<boolean>('modelValue', { required: true, default: fals
     line-height: 130%;
     letter-spacing: -0.01em;
     color: $color-default-white;
+    transition: color $transition;
   }
 
   &__error {
