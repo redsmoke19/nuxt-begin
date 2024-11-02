@@ -55,6 +55,37 @@ const handleClickOutside = (event: Event) => {
   }
 }
 
+const selectOptions = ref<HTMLElement[]>([])
+const searchInput = ref<HTMLInputElement | null>(null)
+const indexElementInFocus = ref<number>(-1)
+
+const onKeyDown = (isDown: boolean) => {
+  if (!isOptionsOpen.value) {
+    return
+  }
+
+  const nextOptionIndex = isDown ? indexElementInFocus.value + 1 : indexElementInFocus.value - 1
+  const nextOption = selectOptions.value?.[nextOptionIndex]
+
+  if (nextOption) {
+    indexElementInFocus.value = nextOptionIndex
+    nextOption.focus()
+  }
+}
+
+watch(isOptionsOpen, (value) => {
+  if (!value) {
+    indexElementInFocus.value = -1
+    return
+  }
+
+  setTimeout(() => {
+    if (searchInput.value) {
+      searchInput.value?.focus()
+    }
+  }, 0)
+})
+
 // NOTE: Просто для примера работы вотчера
 watch(activeOption, (newValue) => {
   emit('update:modelValue', newValue)
@@ -70,7 +101,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="custom-select">
+  <div class="custom-select" @keydown.up.prevent="onKeyDown(false)" @keydown.down.prevent="onKeyDown(true)">
     <div :class="['custom-select__label', { 'is-open': isOptionsOpen }]" @click.stop="toggleOptions">
       <span
         :class="['custom-select__label-field', { 'is-placeholder': !modelValue }]"
@@ -83,14 +114,23 @@ onBeforeUnmount(() => {
     <Transition name="fade">
       <div v-if="isOptionsOpen" ref="options-menu" class="custom-select__options">
         <div v-if="filter" class="custom-select__input">
-          <input v-model="searchOptionState" class="custom-select__field" type="text" placeholder="Поиск" />
+          <input
+            ref="searchInput"
+            v-model="searchOptionState"
+            class="custom-select__field"
+            type="text"
+            placeholder="Поиск"
+          />
           <Icon mode="svg" name="ei:search" />
         </div>
         <ul class="custom-select__list">
           <li
-            v-for="option in filteredOptions"
+            v-for="(option, idx) in filteredOptions"
             :key="option.id"
+            ref="selectOptions"
+            tabindex="0"
             :class="['custom-select__item', { 'is-active': activeOption?.id === option.id }]"
+            @focus="indexElementInFocus = idx"
             @click="onOptionClick(option)"
           >
             <span class="custom-select__option" v-text="$sanitizeHTML(option.value)" />
