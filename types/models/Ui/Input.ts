@@ -1,4 +1,8 @@
 export namespace Input {
+  export enum Mask {
+    PHONE = '+7(###)-###-##-##'
+  }
+
   export enum Types {
     TEXT = 'text',
     EMAIL = 'email',
@@ -18,6 +22,7 @@ export namespace Input {
     required?: boolean
     disabled?: boolean
     type?: Input.Types
+    mask?: string
   }
 
   export interface Emits {

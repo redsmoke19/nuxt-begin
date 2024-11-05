@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Input } from '@/types'
+import type { MaskInputOptions } from 'maska'
 
 const { $sanitizeHTML } = useNuxtApp()
 
@@ -10,7 +11,8 @@ const props = withDefaults(defineProps<Input.Model>(), {
   errorMessage: '',
   required: true,
   disabled: false,
-  type: Input.Types.TEXT
+  type: Input.Types.TEXT,
+  mask: ''
 })
 
 const emit = defineEmits<Input.Emits>()
@@ -23,6 +25,18 @@ const model = computed<string | number>({
     emit('update:modelValue', value)
   }
 })
+
+const getMask = computed<MaskInputOptions | null>(() => {
+  if (props.type === Input.Types.PHONE && props.mask) {
+    return {
+      mask: props.mask === 'default' ? Input.Mask.PHONE : props.mask,
+      eager: false
+    }
+  }
+  return null
+})
+
+console.log(props.mask)
 
 // const model = ref<string | number>('')
 
@@ -45,6 +59,7 @@ const onClick = () => {
     <input
       :id="id"
       v-model="model"
+      v-maska="getMask"
       :type="type"
       :name="name"
       :required="required"
