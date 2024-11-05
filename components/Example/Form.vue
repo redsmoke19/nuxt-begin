@@ -56,7 +56,7 @@ const onSubmit = (e: Event) => {
   formData.append('phone', formState.phone)
   formData.append('mail', formState.mail)
   formData.append('gender', formState.radio)
-  console.log((form.elements.namedItem('name') as HTMLInputElement).value)
+  // console.log((form.elements.namedItem('name') as HTMLInputElement).value)
 }
 
 const getFullName = computed<string>(() => {
@@ -93,11 +93,12 @@ const getFullName = computed<string>(() => {
           <UiInput
             id="phone"
             v-model.number="formState.phone"
+            mask="default"
             name="surname"
             label="Ваш телефон"
             :required="true"
             :type="Input.Types.PHONE"
-            placeholder="Введите ваш номер телефона"
+            placeholder="+7(999)-999-99-99"
           />
           <UiInput
             id="mail"
