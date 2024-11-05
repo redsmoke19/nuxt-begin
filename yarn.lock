@@ -18,7 +18,7 @@
     package-manager-detector "^0.2.0"
     tinyexec "^0.3.0"
 
-"@antfu/utils@^0.7.10":
+"@antfu/utils@^0.7.10", "@antfu/utils@^0.7.7":
   version "0.7.10"
   resolved "https://registry.yarnpkg.com/@antfu/utils/-/utils-0.7.10.tgz#ae829f170158e297a9b6a28f161a8e487d00814d"
   integrity sha512-+562v9k4aI80m1+VuMHehNJWLOFjBnXn3tdOitzD0il5b7smkSBal4+a3oKiQTbrwMmN/TBUMDvbdoWDehgOww==
@@ -1653,7 +1653,7 @@
     std-env "^3.7.0"
     tinyglobby "^0.2.9"
 
-"@nuxt/kit@3.13.2", "@nuxt/kit@^3.0.0", "@nuxt/kit@^3.0.0-rc.4", "@nuxt/kit@^3.1.2", "@nuxt/kit@^3.10.1", "@nuxt/kit@^3.13.1", "@nuxt/kit@^3.13.2", "@nuxt/kit@^3.5.0":
+"@nuxt/kit@3.13.2", "@nuxt/kit@^3.0.0", "@nuxt/kit@^3.0.0-rc.4", "@nuxt/kit@^3.1.2", "@nuxt/kit@^3.10.1", "@nuxt/kit@^3.13.1", "@nuxt/kit@^3.13.2", "@nuxt/kit@^3.5.0", "@nuxt/kit@^3.7.3":
   version "3.13.2"
   resolved "https://registry.yarnpkg.com/@nuxt/kit/-/kit-3.13.2.tgz#4c019a87e08c33ec14d1059497ba40568b82bfed"
   integrity sha512-KvRw21zU//wdz25IeE1E5m/aFSzhJloBRAQtv+evcFeZvuroIxpIQuUqhbzuwznaUwpiWbmwlcsp5uOWmi4vwA==
@@ -1947,6 +1947,67 @@
   version "1.0.0-next.28"
   resolved "https://registry.yarnpkg.com/@polka/url/-/url-1.0.0-next.28.tgz#d45e01c4a56f143ee69c54dd6b12eade9e270a73"
   integrity sha512-8LduaNlMZGwdZ6qWrKlfa+2M4gahzFkprZiAt2TF8uS0qQgBizKXpXURqvTJ4WtmupWxaLqjRb2UCTe72mu+Aw==
+
+"@primeuix/styled@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@primeuix/styled/-/styled-0.2.0.tgz#d3dbdaa00f1cedcad92bbbed6f1b1efb375343c8"
+  integrity sha512-3Q6bDrmwTW88tzJsFIFenC0VyXLj0+/wYw+TZnJ/4CCDfehR4WfTs4EZdpuFtYqvmbpJ6zWXAiwSCNdSYTZkyA==
+  dependencies:
+    "@primeuix/utils" "^0.2.0"
+
+"@primeuix/utils@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@primeuix/utils/-/utils-0.2.0.tgz#42bde7c87f6103460256721731138378793f936f"
+  integrity sha512-AaDIeRFlsbkVTk2s0mlEjnGSLi31X669NVwo+n+AVAnBdDiQznjipNTpHbOobVBtjOKZize74PChK6uoaSBRUw==
+
+"@primevue/auto-import-resolver@4.1.1":
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/@primevue/auto-import-resolver/-/auto-import-resolver-4.1.1.tgz#1ba3fc3c6e4968ca4295e8e01425ce4b5f1ceaff"
+  integrity sha512-IMRxgqgMFjtMJ6+pvGu98amnY44FUUhDyzk6CqEjMkirj0rI9t6aQFvKcBEyf0cwuIveeSggBHS8cbaytZNjuA==
+  dependencies:
+    "@primevue/metadata" "4.1.1"
+
+"@primevue/core@4.1.1":
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/@primevue/core/-/core-4.1.1.tgz#cab26d3618a696d7fbdc2df8756b18d2ff8b0cf0"
+  integrity sha512-jUDrTh3g0FskTdD6rCCsoWfxKky0R7959p7vnaNYI6wMLreaTL3yC3nzYlEniIpb+F51Sm3KJ1eSJBN6DnSB8Q==
+  dependencies:
+    "@primeuix/styled" "^0.2.0"
+    "@primeuix/utils" "^0.2.0"
+
+"@primevue/icons@4.1.1":
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/@primevue/icons/-/icons-4.1.1.tgz#9a52d91ad6177f7f8a4eb13a6cfd402225a1fc89"
+  integrity sha512-Ybeb+AHUsVybITuYNwS7goqWcXLLgCDSiCPoymyYwYkzn5qLakvJbQH1EX8lGOsrvqK0hG+s+n7Wm2MHJ8A72w==
+  dependencies:
+    "@primeuix/utils" "^0.2.0"
+    "@primevue/core" "4.1.1"
+
+"@primevue/metadata@4.1.1":
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/@primevue/metadata/-/metadata-4.1.1.tgz#85572c9a0cf0ffb659abc40c8a10b39833ad6530"
+  integrity sha512-5QQKjtNbgazpX1Q9z8Dc2szUEyvQcEif8kMOXmmWuIuUzCe3QkjbWyk29y7Cukkxk8B7iciDKLMzvGsWpwzsWA==
+
+"@primevue/nuxt-module@^4.1.1":
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/@primevue/nuxt-module/-/nuxt-module-4.1.1.tgz#1475482faa0bb53bc246e15d5e0effd3bc32c701"
+  integrity sha512-MaX4bmVssQLhcL3le5cNyJNhDzfpodZ7SeRUjiDQOFBsXrxE4Pij4iawgLjgsJdRb6ZQs9JIwu0aIQNdGLeApQ==
+  dependencies:
+    "@nuxt/kit" "^3.7.3"
+    "@primeuix/styled" "^0.2.0"
+    "@primeuix/utils" "^0.2.0"
+    "@primevue/auto-import-resolver" "4.1.1"
+    "@primevue/metadata" "4.1.1"
+    pathe "^1.1.2"
+    primevue "4.1.1"
+    unplugin-vue-components "0.27.0"
+
+"@primevue/themes@^4.1.1":
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/@primevue/themes/-/themes-4.1.1.tgz#04cae983940e9cec0ee7a3564009da8c3e7f4c15"
+  integrity sha512-ec2gBN2vP0ydGtGAzC0nYCFqYN7CzvXxnlJqcvcPIo3rP/pcdj+FkzAe3y2DMG3OorYtqdzoyGtBefQrx3v5ag==
+  dependencies:
+    "@primeuix/styled" "^0.2.0"
 
 "@rollup/plugin-alias@^5.1.0":
   version "5.1.1"
@@ -2925,6 +2986,11 @@ acorn@^8.12.1, acorn@^8.6.0, acorn@^8.8.2, acorn@^8.9.0:
   version "8.13.0"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.13.0.tgz#2a30d670818ad16ddd6a35d3842dacec9e5d7ca3"
   integrity sha512-8zSiw54Oxrdym50NlZ9sUusyO1Z1ZchgRLWRaK6c86XJFClyCgFKetdowBg5bKxyp/u+CDBJG4Mpp0m3HLZl9w==
+
+acorn@^8.14.0:
+  version "8.14.0"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.14.0.tgz#063e2c70cac5fb4f6467f0b11152e04c682795b0"
+  integrity sha512-cl669nCJTZBsL97OF4kUQm5g5hC2uihk0NxY3WENAC0TYdILVkAyHymAntgxGkl7K+t0cXIrH5siy5S4XkFycA==
 
 agent-base@6, agent-base@^6.0.2:
   version "6.0.2"
@@ -8052,6 +8118,16 @@ pretty-bytes@^6.1.1:
   resolved "https://registry.yarnpkg.com/pretty-bytes/-/pretty-bytes-6.1.1.tgz#38cd6bb46f47afbf667c202cfc754bffd2016a3b"
   integrity sha512-mQUvGU6aUFQ+rNvTIAcZuWGRT9a6f6Yrg9bHs4ImKF+HZCEK+plBvnAZYSIQztknZF2qnzNtr6F8s0+IuptdlQ==
 
+primevue@4.1.1, primevue@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/primevue/-/primevue-4.1.1.tgz#9557c5701fdadd8c04cc3f37ad9d921101b103e8"
+  integrity sha512-FeJkv7FhfePfUBoApW0qAhid6Znq18VgbGFZdmhUcxvOD49Y2Eo/k2Yn7ypPhRbRApWiaSRN0v/2G1I4AMj3xg==
+  dependencies:
+    "@primeuix/styled" "^0.2.0"
+    "@primeuix/utils" "^0.2.0"
+    "@primevue/core" "4.1.1"
+    "@primevue/icons" "4.1.1"
+
 private@^0.1.8:
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/private/-/private-0.1.8.tgz#2381edb3689f7a53d653190060fcf822d2f368ff"
@@ -8339,7 +8415,7 @@ resolve-pkg-maps@^1.0.0:
   resolved "https://registry.yarnpkg.com/resolve-pkg-maps/-/resolve-pkg-maps-1.0.0.tgz#616b3dc2c57056b5588c31cdf4b3d64db133720f"
   integrity sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw==
 
-resolve@^1.10.0, resolve@^1.10.1, resolve@^1.12.0, resolve@^1.14.2, resolve@^1.22.1, resolve@^1.22.4, resolve@^1.7.1:
+resolve@^1.10.0, resolve@^1.10.1, resolve@^1.12.0, resolve@^1.14.2, resolve@^1.22.1, resolve@^1.22.4, resolve@^1.22.8, resolve@^1.7.1:
   version "1.22.8"
   resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.22.8.tgz#b6c87a9f2aa06dfab52e3d70ac8cde321fa5a48d"
   integrity sha512-oKWePCxqpd6FlLvGV1VU0x7bkPmmCNolxzjMf4NczoDnQcIWrAF+cPtZn5i6n+RfD2d9i0tzpKnG6Yk168yIyw==
@@ -9677,6 +9753,22 @@ universalify@^2.0.0:
   resolved "https://registry.yarnpkg.com/universalify/-/universalify-2.0.1.tgz#168efc2180964e6386d061e094df61afe239b18d"
   integrity sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==
 
+unplugin-vue-components@0.27.0:
+  version "0.27.0"
+  resolved "https://registry.yarnpkg.com/unplugin-vue-components/-/unplugin-vue-components-0.27.0.tgz#f504c5d526d7f2b779003a76070b18d84e40fc54"
+  integrity sha512-77eTEy23sQ0UpzGWnZ9I2mY3cnmXwklz4ITcn3JfxjCoX643ghImkiZ4nFm58sxbdVcc4Fo/o4LIoFnlqEqsSg==
+  dependencies:
+    "@antfu/utils" "^0.7.7"
+    "@rollup/pluginutils" "^5.1.0"
+    chokidar "^3.6.0"
+    debug "^4.3.4"
+    fast-glob "^3.3.2"
+    local-pkg "^0.5.0"
+    magic-string "^0.30.10"
+    minimatch "^9.0.4"
+    resolve "^1.22.8"
+    unplugin "^1.10.1"
+
 unplugin-vue-router@^0.10.8:
   version "0.10.8"
   resolved "https://registry.yarnpkg.com/unplugin-vue-router/-/unplugin-vue-router-0.10.8.tgz#a868cb64e3c27aba98b312aa757e8cb48830b891"
@@ -9703,6 +9795,14 @@ unplugin@^1.10.0, unplugin@^1.12.2, unplugin@^1.14.1, unplugin@^1.3.1:
   integrity sha512-lBlHbfSFPToDYp9pjXlUEFVxYLaue9f9T1HC+4OHlmj+HnMDdz9oZY+erXfoCe/5V/7gKUSY2jpXPb9S7f0f/w==
   dependencies:
     acorn "^8.12.1"
+    webpack-virtual-modules "^0.6.2"
+
+unplugin@^1.10.1:
+  version "1.15.0"
+  resolved "https://registry.yarnpkg.com/unplugin/-/unplugin-1.15.0.tgz#cd1e92e537ab14a03354d6f83f29d536fac2e5a9"
+  integrity sha512-jTPIs63W+DUEDW207ztbaoO7cQ4p5aVaB823LSlxpsFEU3Mykwxf3ZGC/wzxFJeZlASZYgVrWeo7LgOrqJZ8RA==
+  dependencies:
+    acorn "^8.14.0"
     webpack-virtual-modules "^0.6.2"
 
 unstorage@^1.10.2, unstorage@^1.12.0:

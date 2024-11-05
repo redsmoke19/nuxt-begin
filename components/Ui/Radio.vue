@@ -5,7 +5,6 @@ const { $sanitizeHTML } = useNuxtApp()
 
 const props = withDefaults(defineProps<Radio.Model>(), {
   label: '',
-  checked: false,
   required: true,
   value: ''
 })
@@ -26,15 +25,15 @@ const model = defineModel<string>('modelValue', { default: '' })
 <template>
   <div class="custom-radio">
     <input
-      :id="props.id"
+      :id="id"
       v-model="model"
       type="radio"
       class="custom-radio__field visually-hidden"
-      :name="props.name"
+      :name="name"
       :value="value"
     />
-    <label :for="props.id" class="custom-radio__label">
-      <span class="custom-radio__icon"></span>
+    <label :for="id" class="custom-radio__label">
+      <span class="custom-radio__icon" />
       <span class="custom-radio__content" v-text="$sanitizeHTML(label)" />
     </label>
   </div>
@@ -52,6 +51,16 @@ const model = defineModel<string>('modelValue', { default: '' })
 
       &::after {
         opacity: 1;
+      }
+    }
+  }
+
+  &__field {
+    @include focus {
+      + .custom-radio__label {
+        .custom-radio__content {
+          color: $color-light-perp-soft;
+        }
       }
     }
   }
@@ -104,6 +113,7 @@ const model = defineModel<string>('modelValue', { default: '' })
     line-height: 130%;
     letter-spacing: -0.01em;
     color: $color-default-white;
+    transition: color $transition;
   }
 }
 </style>
