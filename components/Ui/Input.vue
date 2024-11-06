@@ -36,8 +36,6 @@ const getMask = computed<MaskInputOptions | null>(() => {
   return null
 })
 
-console.log(props.mask)
-
 // const model = ref<string | number>('')
 
 // const onInput = (event: InputEvent) => {
