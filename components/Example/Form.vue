@@ -12,9 +12,9 @@ interface FormsField {
   select: Select.Option | null
 }
 
-const isSubmit = ref<boolean>(false)
+type FormatType = 'formData' | 'json'
 
-const formState = reactive<FormsField>({
+const initialFormState: FormsField = {
   name: '',
   surname: '',
   phone: '',
@@ -22,7 +22,16 @@ const formState = reactive<FormsField>({
   checkbox: false,
   radio: 'idiot',
   select: null
-})
+}
+
+const isLoading = ref<boolean>(false)
+const isSubmit = ref<boolean>(false)
+
+const formState = reactive<FormsField>({ ...initialFormState })
+
+const formReset = (): void => {
+  Object.assign(formState, initialFormState)
+}
 
 const selectOptions = [
   {
@@ -47,15 +56,26 @@ const selectOptions = [
   }
 ]
 
+function prepareResponseData(data: FormsField, format: FormatType): FormData | string {
+  if (format === 'formData') {
+    const formData = new FormData()
+    Object.entries(data).forEach(([key, value]) => {
+      formData.append(key, String(value ?? ''))
+    })
+    return formData
+  }
+  return JSON.stringify(data)
+}
+
 const onSubmit = (e: Event) => {
-  const form = e.target as HTMLFormElement
-  isSubmit.value = true
-  const formData = new FormData()
-  formData.append('name', formState.name)
-  formData.append('surname', formState.surname)
-  formData.append('phone', formState.phone)
-  formData.append('mail', formState.mail)
-  formData.append('gender', formState.radio)
+  isLoading.value = true
+  setTimeout(() => {
+    isSubmit.value = true
+    isLoading.value = false
+    const data = prepareResponseData(formState, 'json')
+    console.log(data)
+    formReset()
+  }, 3000)
   // console.log((form.elements.namedItem('name') as HTMLInputElement).value)
 }
 
@@ -72,7 +92,7 @@ const getFullName = computed<string>(() => {
         <div class="main-form__grid">
           <UiInput
             id="name"
-            v-model="formState.name"
+            v-model.capitalize="formState.name"
             name="name"
             label="Ваше имя"
             :required="true"
@@ -89,6 +109,7 @@ const getFullName = computed<string>(() => {
             :required="true"
             :type="Input.Types.TEXT"
             placeholder="Введите свою фамилию"
+            @blur="($event) => (formState.mail = 'blurAutoMail@mail.com')"
           />
           <UiInput
             id="phone"
@@ -130,20 +151,26 @@ const getFullName = computed<string>(() => {
           >
             Принимаю пользовательское соглашение
           </UiCheckbox>
-          <UiButton text="Отправить форму" class="main-form__button" :type="Button.Types.SUBMIT" :mods="['primary']" />
+          <UiButton
+            text="Отправить форму"
+            :loading="isLoading"
+            class="main-form__button"
+            :type="Button.Types.SUBMIT"
+            :mods="['primary']"
+          />
         </div>
       </div>
     </form>
     <div class="main-form__result">
       <h3 class="main-form__result-title">Проверьте ваши данные:</h3>
       <p class="main-form__result-name">
-        ФИО: <span v-if="isSubmit">{{ getFullName }}</span>
+        ФИО: <span>{{ getFullName }}</span>
       </p>
       <a href="#" class="main-form__result-mail">
-        Номер телефона: <span v-if="isSubmit">{{ formState.phone }}</span>
+        Номер телефона: <span>{{ formState.phone }}</span>
       </a>
       <a href="#" class="main-form__result-mail">
-        Почта: <span v-if="isSubmit">{{ formState.mail }}</span>
+        Почта: <span>{{ formState.mail }}</span>
       </a>
       <p class="main-form__result-note">
         Пользовательское соглашение <b>{{ formState.checkbox ? 'принято' : 'не принято' }}</b>

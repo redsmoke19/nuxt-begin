@@ -28,5 +28,6 @@ export namespace Input {
   export interface Emits {
     (event: 'update:modelValue', value: string | number): void
     (event: 'click'): void
+    (event: 'blur', value: string): void
   }
 }

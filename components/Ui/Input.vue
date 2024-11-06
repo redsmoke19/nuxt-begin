@@ -15,16 +15,25 @@ const props = withDefaults(defineProps<Input.Model>(), {
   mask: ''
 })
 
-const emit = defineEmits<Input.Emits>()
-
-const model = computed<string | number>({
-  get() {
-    return props.modelValue
-  },
-  set(value: string | number) {
-    emit('update:modelValue', value)
+const [model, mod] = defineModel({
+  set(value: string) {
+    if (mod.capitalize) {
+      return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase()
+    }
+    return value
   }
 })
+
+const emit = defineEmits<Input.Emits>()
+
+// const model = computed<string | number>({
+//   get() {
+//     return props.modelValue
+//   },
+//   set(value: string | number) {
+//     emit('update:modelValue', value)
+//   }
+// })
 
 const getMask = computed<MaskInputOptions | null>(() => {
   if (props.type === Input.Types.PHONE && props.mask) {
@@ -64,6 +73,7 @@ const onClick = () => {
       :placeholder="placeholder"
       :disabled="disabled"
       @click="onClick"
+      @blur="$emit('blur', ($event.target as HTMLInputElement).value)"
     />
     <p v-if="errorMessage" class="custom-input__error" v-html="$sanitizeHTML(errorMessage)" />
   </div>
