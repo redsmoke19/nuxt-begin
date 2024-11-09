@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { FileTypes } from '@/types'
+import { useTemplateRef } from 'vue'
 
 const initialFileData: FileTypes.Data = {
   name: '',
@@ -26,6 +27,8 @@ const model = defineModel<File | null | string>('modelValue', { default: null })
 const uploadReady = ref<boolean>(true)
 const errors = ref<string[]>([])
 const file = reactive<FileTypes.Data>({ ...initialFileData })
+const inputElement = useTemplateRef<HTMLInputElement>('input-file')
+// console.log(inputElement.value)
 
 // NOTE: Тут computed'ы
 const getFileType = computed<string>(() => {
@@ -100,6 +103,7 @@ const handleFileChange = (event: Event) => {
     },
     false
   )
+
   reader.readAsDataURL(fileField)
   model.value = fileField
 }
@@ -110,6 +114,9 @@ const resetFileInput = async (): Promise<void> => {
   // NOTE: Правильно я тут сделал через nextTick ? Не совсем понял как он работает и нужен ли он тут
   await nextTick()
 
+  if (inputElement.value) {
+    inputElement.value.value = ''
+  }
   uploadReady.value = true
   Object.assign(file, initialFileData)
 }
@@ -120,6 +127,7 @@ const resetFileInput = async (): Promise<void> => {
     <div class="custom-file__wrapper">
       <input
         :id="id"
+        ref="input-file"
         type="file"
         class="custom-file__field visually-hidden"
         :name="name"
