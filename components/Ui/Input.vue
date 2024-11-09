@@ -15,9 +15,9 @@ const props = withDefaults(defineProps<Input.Model>(), {
   mask: ''
 })
 
-const [model, mod] = defineModel({
-  set(value: string) {
-    if (mod.capitalize) {
+const [model, mod] = defineModel<string | number>({
+  set(value: string | number) {
+    if (mod.capitalize && typeof value === 'string') {
       return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase()
     }
     return value

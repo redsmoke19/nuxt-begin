@@ -10,6 +10,7 @@ interface FormsField {
   checkbox: boolean
   radio: string
   select: Select.Option | null
+  file: File | null
 }
 
 type FormatType = 'formData' | 'json'
@@ -21,7 +22,8 @@ const initialFormState: FormsField = {
   mail: '',
   checkbox: false,
   radio: 'idiot',
-  select: null
+  select: null,
+  file: null
 }
 
 const isLoading = ref<boolean>(false)
@@ -130,16 +132,21 @@ const getFullName = computed<string>(() => {
             :type="Input.Types.EMAIL"
             placeholder="Введите вашу почту"
           />
-          <div class="main-form__group main-form__wide">
+          <div class="main-form__group">
             <h3 class="main-form__group-title">Укажите ваш пол</h3>
             <div class="main-form__radio-group">
               <UiRadio id="male" v-model="formState.radio" name="gender" value="male" label="Мужской" />
               <UiRadio id="female" v-model="formState.radio" name="gender" value="female" label="Женский" />
               <UiRadio id="idiot" v-model="formState.radio" name="gender" value="idiot" label="Квадробер" />
             </div>
+            <div class="main-form__select">
+              <h3 class="main-form__group-title">Выберете понравившейся вариант</h3>
+              <UiSelect v-model="formState.select" :options="selectOptions" />
+            </div>
           </div>
-          <div class="main-form__select">
-            <UiSelect v-model="formState.select" :options="selectOptions" />
+          <div class="main-form__group">
+            <h3 class="main-form__group-title">Загрузить файл</h3>
+            <UiFile id="file" v-model="formState.file" name="file" :max-size="2" />
           </div>
         </div>
         <div class="main-form__footer">
@@ -180,6 +187,9 @@ const getFullName = computed<string>(() => {
       </p>
       <p class="main-form__result-note">
         Вы выбрали: <b>{{ formState.select?.value ?? '' }}</b>
+      </p>
+      <p class="main-form__result-note">
+        Вы загрузили файл: <b>{{ formState.file?.name }}</b>
       </p>
     </div>
   </div>
@@ -223,6 +233,10 @@ const getFullName = computed<string>(() => {
     display: flex;
     align-items: center;
     gap: 10px;
+  }
+
+  &__select {
+    margin: 4rem 0 0;
   }
 
   &__result {
