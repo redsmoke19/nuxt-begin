@@ -4,11 +4,12 @@ export namespace FileTypes {
   }
 
   export interface Custom {
-    modelValue?: File | null
+    modelValue?: File[] | null
     id: string
     name: string
     accept?: string
     maxSize?: number
+    multiple?: boolean
   }
 
   export interface Data {
@@ -18,6 +19,6 @@ export namespace FileTypes {
     fileExtension: string
     url: string
     isImage: boolean
-    isUploaded: boolean
+    id: string
   }
 }

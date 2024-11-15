@@ -1,39 +1,43 @@
 <script setup lang="ts">
-import { FileTypes } from '@/types'
+import { FileTypes } from '~/types'
 import { useTemplateRef } from 'vue'
+
+const initialFileData: FileTypes.Data = {
+  name: '',
+  size: 0,
+  type: '',
+  fileExtension: '',
+  url: '',
+  isImage: false,
+  isUploaded: false
+}
 
 const props = withDefaults(defineProps<FileTypes.Custom>(), {
   modelValue: null,
   id: '',
   name: '',
   accept: '.jpg, .png, .pdf',
-  maxSize: 1,
-  multiple: false
+  maxSize: 1
 })
 
 // NOTE: я так и не понял как эту хеработу типизировать!
-const model = defineModel<File[] | null>('modelValue', { default: null })
+const model = defineModel<File | null | string>('modelValue', { default: null })
 
 // NOTE: объявляю рефы
 const uploadReady = ref<boolean>(true)
 const errors = ref<string[]>([])
-const choosenFiles = reactive<File[]>([])
-const files = reactive<FileTypes.Data[]>([])
+const file = reactive<FileTypes.Data>({ ...initialFileData })
 const inputElement = useTemplateRef<HTMLInputElement>('input-file')
-const isDragActive = ref<boolean>(false)
-const inActiveTimeout = ref<ReturnType<typeof setTimeout> | null>(null)
 
 // NOTE: Тут computed'ы
 const getFileType = computed<string>(() => {
-  return (
-    props.accept
-      ?.split(', ')
-      .map((ext) => ext.slice(1))
-      .join(' / ') || ''
-  )
+  return props.accept?.split(', ').reduce((acc: string, cur: string, idx: number): string => {
+    const regCur = cur.replace(/^./, '')
+    return idx > 0 ? `${acc} / ${regCur}` : acc + regCur
+  }, '')
 })
 
-const getFileIcon = (file: FileTypes.Data): string => {
+const getFileIcon = computed<string>(() => {
   if (!file.fileExtension) {
     return 'icon-img-default'
   }
@@ -41,7 +45,7 @@ const getFileIcon = (file: FileTypes.Data): string => {
   // NOTE: Вот тут нужен твой совет и помощь) Хотел как то красиво сделать через enum, но не уверен уместен ли он тут
   const extension = file.fileExtension.toUpperCase() as keyof typeof FileTypes.Image
   return FileTypes.Image[extension] || 'icon-img-default'
-}
+})
 
 // NOTE: Ниже три функции не стал делать computed вроде как это не нужно, но могу ошибаться, поправь если не так)
 
@@ -67,149 +71,97 @@ const isFileValid = (file: File): boolean => {
   return errors.value.length === 0
 }
 
-const createFileObject = (file: File): FileTypes.Data => ({
-  name: file.name.split('.').shift() || '',
-  fileExtension: file.name.split('.').pop() || '',
-  size: Math.round((file.size / 1024) * 100) / 100,
-  isImage: /^image\//.test(file.type),
-  url: URL.createObjectURL(file),
-  type: file.type,
-  id: `${file.name}-${file.size}-${file.lastModified}-${file.type}`
-})
+const handleFileChange = (event: Event) => {
+  const target = event.target as HTMLInputElement
 
-const handleFileChange = (event: Event | DragEvent) => {
-  const uploadFiles: FileList | null =
-    'dataTransfer' in event ? event.dataTransfer?.files || null : (event.target as HTMLInputElement)?.files || null
+  // NOTE: Тут из за этого ts пришлось так писать, по другому ни как не пропускал
+  if (!target?.files) return
+  if (!isFileValid(target?.files[0])) return
+  const fileField = target.files[0]
+  const fileSize = Math.round((fileField.size / 1024) * 100) / 100
+  const fileExtension: string = fileField.name.split('.').pop() ?? ''
+  const fileName = fileField.name.split('.').shift()
 
-  if (!uploadFiles) return
+  // NOTE: Тут вот такую штуку ?? false тоже пришлось писать из за ts. Потому что он думает, что может быть пустые значения
+  const isImage = ['jpg', 'jpeg', 'png'].includes(fileExtension) ?? false
+  const reader = new FileReader()
+  reader.addEventListener(
+    'load',
+    () => {
+      Object.assign(file, {
+        name: fileName,
+        size: fileSize,
+        type: fileField.type,
+        fileExtension,
+        url: reader.result as string,
+        isImage,
+        isUploaded: true
+      })
+    },
+    false
+  )
 
-  if (!props.multiple) {
-    files.length = 0
-    choosenFiles.length = 0
-  }
-
-  errors.value = []
-  // choosenFiles.splice(0, choosenFiles.length, ...choosenFiles)
-
-  Array.from(uploadFiles).forEach((file) => {
-    if (!isFileValid(file)) return
-
-    const fileObj: FileTypes.Data = createFileObject(file)
-
-    if (files.some(({ id }) => id === fileObj.id)) {
-      errors.value.push('Данный файл уже был загружен')
-      return
-    }
-
-    files.push(fileObj)
-    choosenFiles.push(file)
-    console.log(files)
-    console.log(choosenFiles)
-  })
-  model.value = choosenFiles
+  reader.readAsDataURL(fileField)
+  model.value = fileField
 }
 
-const clearInputElement = () => {
+const resetFileInput = async (): Promise<void> => {
+  uploadReady.value = false
+
+  // NOTE: Правильно я тут сделал через nextTick ? Не совсем понял как он работает и нужен ли он тут
+  await nextTick()
+
   if (inputElement.value) {
     inputElement.value.value = ''
   }
-}
-
-const removeFile = (index: number) => {
-  clearInputElement()
-  files.splice(index, 1)
-  choosenFiles.splice(index, 1)
-  console.log(files)
-  console.log(choosenFiles)
-}
-
-// NOTE: Осталась старая функция, пока не придумал как очищать поля при отправки формы
-const resetFileInput = async (): Promise<void> => {
-  choosenFiles.splice(0)
-  files.splice(0)
-  errors.value = []
-  uploadReady.value = false
-  await nextTick()
   uploadReady.value = true
-  if (inputElement.value) inputElement.value.value = ''
+  Object.assign(file, initialFileData)
 }
-
-const setDragActive = (): void => {
-  isDragActive.value = true
-  clearTimeout(inActiveTimeout.value as unknown as number)
-  inActiveTimeout.value = null
-}
-
-const setDragInactive = (): void => {
-  inActiveTimeout.value = setTimeout(() => {
-    isDragActive.value = false
-  }, 50)
-}
-
-const onDrop = (event: DragEvent) => {
-  const files = event.dataTransfer ? event.dataTransfer.files : null
-  const allowDrop = props.multiple || (files && files.length === 1)
-
-  if (allowDrop) {
-    handleFileChange(event)
-  }
-  setDragInactive()
-}
-
-defineExpose({ resetFileInput })
 </script>
 
 <template>
-  <div
-    class="custom-file"
-    @dragenter.prevent.stop="setDragActive"
-    @dragover.prevent.stop="setDragActive"
-    @dragleave="setDragInactive"
-    @drop.prevent.stop="onDrop"
-  >
+  <div class="custom-file">
     <div class="custom-file__wrapper">
       <input
         :id="id"
         ref="input-file"
         type="file"
-        :multiple="multiple"
         class="custom-file__field visually-hidden"
         :name="name"
         :accept="accept"
         @change="handleFileChange"
       />
-      <label :for="id" :class="['custom-file__label', { 'is-drag': isDragActive }]">
+      <label :for="id" class="custom-file__label">
         <span class="custom-file__initial">
           <BaseIconT class="custom-file__icon" name="icon-upload" />
-          <span v-if="!multiple" class="custom-file__text">Перетяните файл сюда или просто нажмите</span>
-          <span v-if="multiple" class="custom-file__text">Перетяните / выберите один или несколько файлов</span>
+          <span class="custom-file__text">Перетяните файл сюда или просто нажмите</span>
           <span class="custom-file__note">Формат файла: {{ getFileType }}</span>
           <span class="custom-file__note">Размер файла: до {{ maxSize }} Мб</span>
         </span>
       </label>
     </div>
-    <div v-if="errors.length > 0" class="custom-file__errors">
-      <span v-for="error in errors" :key="error" class="custom-file__error">{{ error }}</span>
-    </div>
-    <ul v-if="files.length" class="custom-file__result-list">
-      <li v-for="(file, index) in files" :key="file.id" class="custom-file__result-item">
+    <ul v-if="file.isUploaded" class="custom-file__result-list">
+      <li class="custom-file__result-item">
         <div class="custom-file__result">
           <div v-if="file.isImage" class="custom-file__result-box">
             <img :src="file.url" alt="" data-not-lazy />
           </div>
           <div v-if="!file.isImage" class="custom-file__result-box">
-            <BaseIconT :name="getFileIcon(file)" class="custom-file__result-icon" />
+            <BaseIconT :name="getFileIcon" class="custom-file__result-icon" />
           </div>
           <div class="custom-file__info">
             <span class="custom-file__file-name">{{ `${file.name}.${file.fileExtension}` }}</span>
             <span class="custom-file__file-name">{{ `${file.size} KB` }}</span>
           </div>
-          <button class="custom-file__delete" type="button" aria-label="Очистить файл" @click="removeFile(index)">
+          <button class="custom-file__delete" type="button" aria-label="Очистить файл" @click="resetFileInput">
             <BaseIconT name="icon-close" />
           </button>
         </div>
       </li>
     </ul>
+    <div v-if="errors.length > 0" class="custom-file__errors">
+      <span v-for="error in errors" :key="error" class="custom-file__error">{{ error }}</span>
+    </div>
   </div>
 </template>
 
@@ -246,7 +198,7 @@ defineExpose({ resetFileInput })
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 0.3rem solid $color-transparent;
+    border: 0.1rem solid $color-transparent;
     padding: 2rem 1rem;
     cursor: pointer;
     height: 100%;
@@ -255,23 +207,10 @@ defineExpose({ resetFileInput })
 
     @include hover {
       border-color: $color-default-white;
-      //background-color: #292d3e;
+      background-color: #292d3e;
 
       #{$root}__initial {
         color: #fff;
-      }
-    }
-
-    &.is-drag {
-      border: 0.3em dashed $color-default-white;
-
-      #{$root}__initial {
-        color: #fff;
-      }
-
-      @include hover {
-        border-color: $color-transparent;
-        background-color: #a3a3a3;
       }
     }
   }
@@ -303,17 +242,9 @@ defineExpose({ resetFileInput })
 
   &__result-list {
     margin: 2rem 0 0;
-    padding: 2rem 0 0;
+    padding: 1rem 0 0;
     list-style: none;
     border-top: 3px solid $color-light-perp-soft;
-  }
-
-  &__result-item {
-    &:not(:first-child) {
-      margin: 1.5rem 0 0;
-      padding: 1.5rem 0 0;
-      border-top: 2px solid $color-light-perp-soft;
-    }
   }
 
   &__result {

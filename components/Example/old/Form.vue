@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { Input, Button } from '@/types'
-import type { Select } from '@/types'
-import { useTemplateRef } from 'vue'
+import { Input, Button } from '~/types'
+import type { Select } from '~/types'
+import useFileList from '~/composables/BaseDrag/file-list.ts'
 
 interface FormsField {
   name: string
@@ -11,12 +11,21 @@ interface FormsField {
   checkbox: boolean
   radio: string
   select: Select.Option | null
-  files: File[] | null
+  file: File | null
 }
 
-interface FileUploadComponent {
-  resetFileInput: () => void
+// NOTE: Тут тестирую новый тип файлов
+const { files, addFiles, removeFile } = useFileList()
+
+const onInputChange = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  if (target.files) {
+    const files = [...target.files]
+    addFiles(files)
+    target.value = ''
+  }
 }
+// NOTE: Тут заканчивается этот код
 
 type FormatType = 'formData' | 'json'
 
@@ -28,16 +37,15 @@ const initialFormState: FormsField = {
   checkbox: false,
   radio: 'idiot',
   select: null,
-  files: null
+  file: null
 }
+
 const isLoading = ref<boolean>(false)
 const isSubmit = ref<boolean>(false)
-const fileUploadComponent = useTemplateRef<FileUploadComponent>('fileUploadRef')
 
 const formState = reactive<FormsField>({ ...initialFormState })
 
 const formReset = (): void => {
-  fileUploadComponent.value?.resetFileInput()
   Object.assign(formState, initialFormState)
 }
 
@@ -117,7 +125,7 @@ const getFullName = computed<string>(() => {
             :required="true"
             :type="Input.Types.TEXT"
             placeholder="Введите свою фамилию"
-            @blur="formState.mail = 'blurAutoMail@mail.com'"
+            @blur="($event) => (formState.mail = 'blurAutoMail@mail.com')"
           />
           <UiInput
             id="phone"
@@ -152,14 +160,25 @@ const getFullName = computed<string>(() => {
           </div>
           <div class="main-form__group">
             <h3 class="main-form__group-title">Загрузить файл</h3>
-            <UiFile
-              id="file"
-              ref="fileUploadRef"
-              v-model="formState.files"
-              name="file"
-              :max-size="2"
-              :multiple="false"
-            />
+            <UiFile id="file" v-model="formState.file" name="file" :max-size="2" />
+            <BaseDropZone v-slot="{ dropZoneActive }" class="drop-area" @files-dropped="addFiles">
+              <label for="file-input">
+                <span v-if="dropZoneActive">
+                  <span>Drop Them Here</span>
+                  <span class="smaller">to add them</span>
+                </span>
+                <span v-else>
+                  <span>Drag Your Files Here</span>
+                  <span class="smaller">
+                    or <strong><em>click here</em></strong> to select files
+                  </span>
+                </span>
+                <input id="file-input" type="file" multiple @change="onInputChange" />
+              </label>
+              <ul v-show="files.length">
+                <UiFilePrewiew v-for="file in files" :key="file.id" :file="file" tag="li" @remove="removeFile" />
+              </ul>
+            </BaseDropZone>
           </div>
         </div>
         <div class="main-form__footer">
@@ -200,6 +219,9 @@ const getFullName = computed<string>(() => {
       </p>
       <p class="main-form__result-note">
         Вы выбрали: <b>{{ formState.select?.value ?? '' }}</b>
+      </p>
+      <p class="main-form__result-note">
+        Вы загрузили файл: <b>{{ formState.file?.name }}</b>
       </p>
     </div>
   </div>
@@ -292,6 +314,21 @@ const getFullName = computed<string>(() => {
   &__button {
     width: 30rem;
     margin: 4rem 0 0;
+  }
+}
+
+.drop-area {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 50px;
+  background: #fff5;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 30%);
+  transition: 0.2s ease;
+
+  &[data-active='true'] {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 50%);
+    background: #fffc;
   }
 }
 </style>
