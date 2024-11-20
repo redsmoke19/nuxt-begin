@@ -1,14 +1,27 @@
 <script setup lang="ts">
 import type { Checkbox } from '@/types'
+import { useField } from 'vee-validate'
 
 const props = withDefaults(defineProps<Checkbox.Model>(), {
   label: '',
   required: true,
-  errorMessage: ''
+  errorMessage: '',
+  value: ''
 })
 
-const model = defineModel<boolean>('modelValue', { required: true, default: false })
-// const emit = defineEmits<Checkbox.Emits>()
+const { errorMessage, checked, handleChange } = useField(() => props.name, undefined, {
+  type: 'checkbox',
+  checkedValue: props.value || true,
+  uncheckedValue: false
+})
+
+// const model = defineModel<boolean>('modelValue', { required: true, default: false })
+const emit = defineEmits<Checkbox.Emits>()
+
+const onChange = (event: Event) => {
+  handleChange(event)
+  emit('changeStatus', checked?.value ?? false)
+}
 //
 // const model = computed<boolean>({
 //   get() {
@@ -22,11 +35,18 @@ const model = defineModel<boolean>('modelValue', { required: true, default: fals
 
 <template>
   <div class="custom-checkbox">
-    <input :id="id" v-model="model" type="checkbox" class="custom-checkbox__field visually-hidden" :name="name" />
+    <input
+      :id="id"
+      type="checkbox"
+      class="custom-checkbox__field visually-hidden"
+      :name="name"
+      :value="value"
+      @change="onChange"
+    />
     <label :for="id" class="custom-checkbox__label">
       <span class="custom-checkbox__icon">
         <Transition>
-          <Icon v-if="model" mode="css" name="stash:check-solid" />
+          <Icon v-if="checked" mode="css" name="stash:check-solid" />
         </Transition>
       </span>
       <span class="custom-checkbox__content">

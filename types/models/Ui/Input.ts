@@ -23,11 +23,12 @@ export namespace Input {
     disabled?: boolean
     type?: Input.Types
     mask?: string
+    modification?: string
   }
 
   export interface Emits {
     (event: 'update:modelValue', value: string | number): void
     (event: 'click'): void
-    (event: 'blur', value: string): void
+    (event: 'blur', value: string | number): void
   }
 }

@@ -2,8 +2,6 @@
 import { Input, Button } from '@/types'
 import type { Select } from '@/types'
 import { useTemplateRef } from 'vue'
-import { useForm } from 'vee-validate'
-import generalSchema from '~/utils/validationSchemas/exampleFormSchema'
 
 interface FormsField {
   name: string
@@ -32,24 +30,16 @@ const initialFormState: FormsField = {
   select: null,
   files: []
 }
-
-const { handleSubmit, resetForm } = useForm({
-  validationSchema: generalSchema(['email', 'phone', 'name', 'surname', 'agree']),
-  validateOnMount: false,
-  initialValues: {
-    agree: false
-  }
-})
-
 const isLoading = ref<boolean>(false)
 const isSubmit = ref<boolean>(false)
 const fileUploadComponent = useTemplateRef<FileUploadComponent>('fileUploadRef')
 
 const formState = reactive<FormsField>({ ...initialFormState })
 
-const getFullName = computed<string>(() => {
-  return `${formState.name?.trim() || ''} ${formState.surname?.trim() || ''}`
-})
+const formReset = (): void => {
+  fileUploadComponent.value?.resetFileInput()
+  Object.assign(formState, initialFormState)
+}
 
 const selectOptions = [
   {
@@ -63,15 +53,18 @@ const selectOptions = [
   {
     id: 3,
     value: 'Вариант третий'
+  },
+  {
+    id: 4,
+    value: 'Вариант четвертый'
+  },
+  {
+    id: 5,
+    value: 'Вариант пятый'
   }
 ]
 
-const formReset = (): void => {
-  fileUploadComponent.value?.resetFileInput()
-  Object.assign(formState, initialFormState)
-}
-
-const prepareResponseData = (data: FormsField, format: FormatType): FormData | string => {
+function prepareResponseData(data: FormsField, format: FormatType): FormData | string {
   if (format === 'formData') {
     const formData = new FormData()
     Object.entries(data).forEach(([key, value]) => {
@@ -82,63 +75,64 @@ const prepareResponseData = (data: FormsField, format: FormatType): FormData | s
   return JSON.stringify(data)
 }
 
-const onSubmit = handleSubmit((values) => {
+const onSubmit = (e: Event) => {
   isLoading.value = true
   setTimeout(() => {
     isSubmit.value = true
     isLoading.value = false
-    const data = prepareResponseData(formState, 'formData')
+    const data = prepareResponseData(formState, 'json')
     console.log(data)
-    console.log(values)
     formReset()
-    resetForm()
   }, 3000)
+  // console.log((form.elements.namedItem('name') as HTMLInputElement).value)
+}
+
+const getFullName = computed<string>(() => {
+  return `${formState.name?.trim() || ''} ${formState.surname?.trim() || ''}`
 })
 </script>
 
 <template>
   <div class="main-form">
-    <form class="main-form__form" action="#" method="post" novalidate @submit.prevent="onSubmit">
+    <form class="main-form__form" action="#" method="post" @submit.prevent="onSubmit">
       <div class="main-form__wrapper">
         <h2 class="main-form__title">Тренировочная форма</h2>
         <div class="main-form__grid">
           <UiInput
             id="name"
-            v-model="formState.name"
+            v-model.capitalize="formState.name"
             name="name"
             label="Ваше имя"
             :required="true"
             :type="Input.Types.TEXT"
             placeholder="Введите свое имя"
-            modification="capitalize"
             @click="formState.name = ''"
           />
           <UiInput
             id="surname"
-            v-model="formState.surname"
+            v-model.capitalize="formState.surname"
             name="surname"
             error-message="Заполните поле"
             label="Ваша фамилия"
             :required="true"
             :type="Input.Types.TEXT"
             placeholder="Введите свою фамилию"
-            modification="capitalize"
             @blur="formState.mail = 'blurAutoMail@mail.com'"
           />
           <UiInput
             id="phone"
-            v-model="formState.phone"
+            v-model.number="formState.phone"
             mask="default"
-            name="phone"
+            name="surname"
             label="Ваш телефон"
             :required="true"
             :type="Input.Types.PHONE"
             placeholder="+7(999)-999-99-99"
           />
           <UiInput
-            id="email"
+            id="mail"
             v-model="formState.mail"
-            name="email"
+            name="mail"
             label="Ваша почта"
             :required="true"
             :type="Input.Types.EMAIL"
@@ -169,7 +163,12 @@ const onSubmit = handleSubmit((values) => {
           </div>
         </div>
         <div class="main-form__footer">
-          <UiCheckbox id="agree" name="agree" value="true" @change-status="formState.checkbox = $event">
+          <UiCheckbox
+            id="agree"
+            v-model="formState.checkbox"
+            name="agree"
+            :error-message="formState.checkbox ? '' : 'Необходимо дать свое согласие'"
+          >
             Принимаю пользовательское соглашение
           </UiCheckbox>
           <UiButton
