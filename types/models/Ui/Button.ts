@@ -10,5 +10,6 @@ export namespace Button {
     text?: string
     url?: string
     type?: Types
+    loading?: boolean
   }
 }

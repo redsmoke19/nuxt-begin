@@ -5,7 +5,6 @@
     :class="{ 'icon-wrapper--fill': !filled, 'icon-wrapper--stroke': isStroke }"
     v-html="icon"
   />
-  <img v-else :src="icon" class="icon-wrapper" data-not-lazy :alt="alt" />
 </template>
 
 <script lang="ts" setup>
