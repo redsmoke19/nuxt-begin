@@ -5,6 +5,12 @@ export default defineNuxtConfig({
   ssr: true,
   devtools: { enabled: true },
 
+  runtimeConfig: {
+    public: {
+      apiUrl: process.env.BASE_API_URL
+    }
+  },
+
   alias: {
     '@img': fileURLToPath(new URL('./assets/images', import.meta.url)),
     '@icons': fileURLToPath(new URL('./assets/icons', import.meta.url)),
@@ -36,13 +42,22 @@ export default defineNuxtConfig({
     'nuxt-lazy-load',
     ['@pinia/nuxt', { disableVuex: false }],
     '@nuxt/icon',
-    '@primevue/nuxt-module'
+    '@primevue/nuxt-module',
+    '@vueuse/motion/nuxt'
   ],
 
   primevue: {
     autoImport: true,
     components: {
       prefix: 'Prime'
+    },
+    theme: {
+      preset: 'Aura',
+      options: {
+        prefix: 'p',
+        darkModeSelector: 'system',
+        cssLayer: false
+      }
     }
   },
 

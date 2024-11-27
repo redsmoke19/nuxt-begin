@@ -1,10 +1,11 @@
 <template>
   <BaseLayout>
     <template #page-header>
-      <Header />
+      <LayoutHeader />
     </template>
     <template #page-content>
       <NuxtPage />
+      <LazyLayoutPopups />
     </template>
     <template #page-footer></template>
   </BaseLayout>

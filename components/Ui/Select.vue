@@ -202,7 +202,7 @@ onBeforeUnmount(() => {
         tabindex="0"
         @keydown="onKeyDown"
         @blur="onBlur"
-        v-text="modelValue?.value ?? placeholder"
+        v-text="modelValue?.text ?? placeholder"
       />
       <span class="custom-select__icon">
         <Icon mode="svg" name="ri:arrow-down-s-line" />
@@ -224,7 +224,7 @@ onBeforeUnmount(() => {
             ]"
             @click="onOptionClick(option)"
           >
-            <span class="custom-select__option" v-text="$sanitizeHTML(option.value)" />
+            <span class="custom-select__option" v-text="$sanitizeHTML(option.text)" />
           </li>
         </ul>
       </div>
@@ -302,6 +302,7 @@ onBeforeUnmount(() => {
     top: calc(100% + 0.3rem);
     left: 0;
     width: 100%;
+    background-color: #1a1a1a;
     max-width: 16rem;
   }
 

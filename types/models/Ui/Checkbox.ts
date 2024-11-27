@@ -5,9 +5,11 @@ export namespace Checkbox {
     label?: string
     required?: boolean
     errorMessage?: string
+    value?: string
   }
 
   export interface Emits {
     (event: 'update:modelValue', value: boolean): void
+    (event: 'changeStatus', value: boolean): void
   }
 }

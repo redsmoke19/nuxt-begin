@@ -3,7 +3,7 @@ import { FileTypes } from '@/types'
 import { useTemplateRef } from 'vue'
 
 const props = withDefaults(defineProps<FileTypes.Custom>(), {
-  modelValue: null,
+  modelValue: () => [],
   id: '',
   name: '',
   accept: '.jpg, .png, .pdf',
@@ -18,7 +18,7 @@ const model = defineModel<File[] | null>('modelValue', { default: null })
 const uploadReady = ref<boolean>(true)
 const errors = ref<string[]>([])
 const choosenFiles = reactive<File[]>([])
-const files = reactive<FileTypes.Data[]>([])
+const files = ref<FileTypes.Data[]>([])
 const inputElement = useTemplateRef<HTMLInputElement>('input-file')
 const isDragActive = ref<boolean>(false)
 const inActiveTimeout = ref<ReturnType<typeof setTimeout> | null>(null)
@@ -84,27 +84,27 @@ const handleFileChange = (event: Event | DragEvent) => {
   if (!uploadFiles) return
 
   if (!props.multiple) {
-    files.length = 0
+    files.value = []
     choosenFiles.length = 0
   }
 
   errors.value = []
   // choosenFiles.splice(0, choosenFiles.length, ...choosenFiles)
+  // Array.prototype.forEach.apply(uploadFiles, () => {
+  //
+  // })
 
   Array.from(uploadFiles).forEach((file) => {
     if (!isFileValid(file)) return
 
     const fileObj: FileTypes.Data = createFileObject(file)
-
-    if (files.some(({ id }) => id === fileObj.id)) {
+    if (files.value.some(({ id }) => id === fileObj.id)) {
       errors.value.push('Данный файл уже был загружен')
       return
     }
 
-    files.push(fileObj)
+    files.value.push(fileObj)
     choosenFiles.push(file)
-    console.log(files)
-    console.log(choosenFiles)
   })
   model.value = choosenFiles
 }
@@ -117,16 +117,14 @@ const clearInputElement = () => {
 
 const removeFile = (index: number) => {
   clearInputElement()
-  files.splice(index, 1)
+  files.value.splice(index, 1)
   choosenFiles.splice(index, 1)
-  console.log(files)
-  console.log(choosenFiles)
 }
 
 // NOTE: Осталась старая функция, пока не придумал как очищать поля при отправки формы
 const resetFileInput = async (): Promise<void> => {
   choosenFiles.splice(0)
-  files.splice(0)
+  files.value.splice(0)
   errors.value = []
   uploadReady.value = false
   await nextTick()
@@ -157,6 +155,15 @@ const onDrop = (event: DragEvent) => {
 }
 
 defineExpose({ resetFileInput })
+
+// watch(
+//   () => props.modelValue,
+//   (newValue: File[]) => {
+//     if (!newValue.length) {
+//       console.log(newValue)
+//     }
+//   }
+// )
 </script>
 
 <template>

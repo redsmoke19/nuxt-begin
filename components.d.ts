@@ -7,8 +7,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    PrimeFileUpload: typeof import('primevue/fileupload')['default']
-    PrimeSelect: typeof import('primevue/select')['default']
+    PrimeSkeleton: typeof import('primevue/skeleton')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { Input } from '@/types'
+import { Input } from '~/types'
 import type { MaskInputOptions } from 'maska'
-import { useField } from 'vee-validate'
 
 const { $sanitizeHTML } = useNuxtApp()
 
@@ -13,41 +12,28 @@ const props = withDefaults(defineProps<Input.Model>(), {
   required: true,
   disabled: false,
   type: Input.Types.TEXT,
-  mask: '',
-  modification: '',
-  mods: []
+  mask: ''
 })
 
-const { value, errorMessage, handleChange, handleBlur } = useField(() => props.name, undefined, {
-  validateOnValueUpdate: false,
-  syncVModel: true
+const [model, mod] = defineModel<string | number>({
+  set(value: string | number) {
+    if (mod.capitalize && typeof value === 'string') {
+      return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase()
+    }
+    return value
+  }
 })
 
 const emit = defineEmits<Input.Emits>()
 
-const validationListeners = {
-  blur: (event: InputEvent) => handleBlur(event, true),
-  change: handleChange,
-  input: (event: InputEvent) => handleChange(event, !!errorMessage.value)
-}
-
-const modifyValue = (input: string): string => {
-  if (props.modification === 'capitalize') {
-    return input.charAt(0).toUpperCase() + input.slice(1).toLowerCase()
-  }
-  return input
-}
-
-watch(value, (newValue) => {
-  if (!value.value) {
-    return
-  }
-  const modified = modifyValue(newValue as string)
-  if (newValue !== modified && !props.mask) {
-    value.value = modified
-    emit('update:modelValue', modified)
-  }
-})
+// const model = computed<string | number>({
+//   get() {
+//     return props.modelValue
+//   },
+//   set(value: string | number) {
+//     emit('update:modelValue', value)
+//   }
+// })
 
 const getMask = computed<MaskInputOptions | null>(() => {
   if (props.type === Input.Types.PHONE && props.mask) {
@@ -59,27 +45,34 @@ const getMask = computed<MaskInputOptions | null>(() => {
   return null
 })
 
-const inputClasses = computed(() => ({
-  'is-error': !!props.errorMessage,
-  ...(props.mods?.reduce((acc, mod) => ({ ...acc, [`custom-input--${mod}`]: true }), {}) ?? {})
-  // ...props.mods?.map((el: string) => `custom-input--${el}`)
-}))
+// const model = ref<string | number>('')
+
+// const onInput = (event: InputEvent) => {
+//   emit('update:modelValue', (event.target as HTMLInputElement).value)
+// }
+
+// watch(model, (value: string | number) => {
+//   emit('update:modelValue', value)
+// })
+
+const onClick = () => {
+  emit('click')
+}
 </script>
 
 <template>
-  <div class="custom-input" :class="inputClasses">
+  <div class="custom-input" :class="{ 'is-error': errorMessage }">
     <label v-if="label" :for="id" v-text="label" />
     <input
       :id="id"
-      v-model="value"
+      v-model="model"
       v-maska="getMask"
-      class="custom-input__field"
       :type="type"
       :name="name"
       :required="required"
       :placeholder="placeholder"
       :disabled="disabled"
-      v-on="validationListeners"
+      @click="onClick"
       @blur="$emit('blur', ($event.target as HTMLInputElement).value)"
     />
     <p v-if="errorMessage" class="custom-input__error" v-html="$sanitizeHTML(errorMessage)" />
@@ -88,17 +81,7 @@ const inputClasses = computed(() => ({
 
 <style scoped lang="scss">
 .custom-input {
-  $root: &;
-
-  &--small {
-    #{$root}__field {
-      padding: 0.6rem 2rem;
-      border-radius: 0.6rem;
-      font-size: 1.4rem;
-    }
-  }
-
-  &__field {
+  input {
     padding: 1.5rem 2rem;
     border-radius: 1rem;
     border: 0.1rem solid $color-transparent;

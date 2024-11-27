@@ -2,6 +2,7 @@ export namespace Select {
   export type Option = {
     id: string | number
     value: string
+    text: string
   }
 
   export interface Model {

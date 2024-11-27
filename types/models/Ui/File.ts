@@ -4,7 +4,7 @@ export namespace FileTypes {
   }
 
   export interface Custom {
-    modelValue?: File[] | null
+    modelValue?: File[]
     id: string
     name: string
     accept?: string
