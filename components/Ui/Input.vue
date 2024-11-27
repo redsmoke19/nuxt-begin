@@ -14,7 +14,8 @@ const props = withDefaults(defineProps<Input.Model>(), {
   disabled: false,
   type: Input.Types.TEXT,
   mask: '',
-  modification: ''
+  modification: '',
+  mods: []
 })
 
 const { value, errorMessage, handleChange, handleBlur } = useField(() => props.name, undefined, {
@@ -57,15 +58,22 @@ const getMask = computed<MaskInputOptions | null>(() => {
   }
   return null
 })
+
+const inputClasses = computed(() => ({
+  'is-error': !!props.errorMessage,
+  ...(props.mods?.reduce((acc, mod) => ({ ...acc, [`custom-input--${mod}`]: true }), {}) ?? {})
+  // ...props.mods?.map((el: string) => `custom-input--${el}`)
+}))
 </script>
 
 <template>
-  <div class="custom-input" :class="{ 'is-error': errorMessage }">
+  <div class="custom-input" :class="inputClasses">
     <label v-if="label" :for="id" v-text="label" />
     <input
       :id="id"
       v-model="value"
       v-maska="getMask"
+      class="custom-input__field"
       :type="type"
       :name="name"
       :required="required"
@@ -80,7 +88,17 @@ const getMask = computed<MaskInputOptions | null>(() => {
 
 <style scoped lang="scss">
 .custom-input {
-  input {
+  $root: &;
+
+  &--small {
+    #{$root}__field {
+      padding: 0.6rem 2rem;
+      border-radius: 0.6rem;
+      font-size: 1.4rem;
+    }
+  }
+
+  &__field {
     padding: 1.5rem 2rem;
     border-radius: 1rem;
     border: 0.1rem solid $color-transparent;

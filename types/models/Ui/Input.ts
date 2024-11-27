@@ -24,6 +24,7 @@ export namespace Input {
     type?: Input.Types
     mask?: string
     modification?: string
+    mods?: string[]
   }
 
   export interface Emits {

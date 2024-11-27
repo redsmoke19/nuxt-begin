@@ -54,15 +54,18 @@ const getFullName = computed<string>(() => {
 const selectOptions = [
   {
     id: 1,
-    value: 'Вариант первый'
+    value: 'first-choose',
+    text: 'Вариант первый'
   },
   {
     id: 2,
-    value: 'Вариант второй'
+    value: 'second-choose',
+    text: 'Вариант второй'
   },
   {
     id: 3,
-    value: 'Вариант третий'
+    value: 'third-choose',
+    text: 'Вариант третий'
   }
 ]
 
@@ -200,7 +203,7 @@ const onSubmit = handleSubmit((values) => {
         Ваш пол: <b>{{ formState.radio }}</b>
       </p>
       <p class="main-form__result-note">
-        Вы выбрали: <b>{{ formState.select?.value ?? '' }}</b>
+        Вы выбрали: <b>{{ formState.select?.text ?? '' }}</b>
       </p>
     </div>
   </div>

@@ -42,7 +42,8 @@ module.exports = {
     'import/extensions': ['error', 'never']
   },
   globals: {
-    useSeoMeta: true
+    useSeoMeta: true,
+    $fetch: 'readonly'
   },
   settings: {
     'import/resolver': {
