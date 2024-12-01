@@ -4,17 +4,17 @@ import type { Articles, Select } from '@/types'
 const selectOptions: Select.Option[] = [
   {
     id: 1,
-    value: 'default',
+    value: '',
     text: 'По умолчанию'
   },
   {
     id: 2,
-    value: 'new-article',
+    value: '-created_at',
     text: 'Сначала новые'
   },
   {
     id: 3,
-    value: 'old-article',
+    value: 'created_at',
     text: 'Сначала старые'
   }
 ]
@@ -23,37 +23,64 @@ const config = useRuntimeConfig()
 
 const page = ref<number>(1)
 const totalPage = ref<number>(1)
-const filterOption = ref<Select.Option | null>(selectOptions[0])
-const authorName = ref<string>('')
 
-const getSortByDate = computed<string>(() => {
-  switch (filterOption.value?.value) {
-    case 'new-article':
-      return '-created_at'
-    case 'old-article':
-      return 'created_at'
-    default:
-      return '-'
-  }
-})
+const selectedSorting = ref<Select.Model['modelValue']>(selectOptions[0])
+const selectedSortingValue = computed<string | undefined>(() =>
+  selectedSorting.value?.value ? selectedSorting.value.value : undefined
+)
 
-const getAuthorId = computed<string>(() => {
-  return authorName.value ? `&author_id=${authorName.value}` : ''
-})
+const selectedAuthor = ref<Select.Model['modelValue']>(null)
+const selectedAuthorId = computed<string | undefined>(() => selectedAuthor.value?.id.toString())
 
-const getUrl = computed<string>(() => {
-  return `${config.public.apiUrl}articles?page=${page.value}&limit=6&sortBy=${getSortByDate.value}${getAuthorId.value}`
-})
+// const getSortByDate = computed<string | undefined>(() => {
+//   switch (selectedSorting.value?.value) {
+//     case 'new-article':
+//       return '-created_at'
+//     case 'old-article':
+//       return 'created_at'
+//     default:
+//       return undefined
+//   }
+// })
 
-const { data, status } = await useAsyncData<Articles.ServerResponse | null>(
+// const getAuthorId = computed<string>(() => {
+//   return selectedAuthorId.value ? `&author_id=${selectedAuthorId.value}` : ''
+// })
+
+// const getUrl = computed<string>(() => {
+//   return `${config.public.apiUrl}articles?page=${page.value}&limit=6&sortBy=${getSortByDate.value}${getAuthorId.value}`
+// })
+
+const { data, status } = useAsyncData<Articles.ServerResponse | null>(
   'articles',
   () => {
-    return $fetch(getUrl.value)
+    return $fetch(`${config.public.apiUrl}articles`, {
+      params: {
+        page: page.value,
+        limit: 6,
+        sortBy: selectedSortingValue.value,
+        author_id: selectedAuthorId.value
+      }
+    })
   },
   {
-    watch: [page, filterOption, authorName]
+    watch: [page, selectedSortingValue, selectedAuthorId],
+    default: () => []
   }
 )
+
+const getAuthors = async (): Promise<Select.Option[]> => {
+  const authors = await $fetch<Articles.Author[]>(`${config.public.apiUrl}authors`)
+  return authors.map((item) => ({
+    id: item.id,
+    value: item.id.toString(),
+    text: item.name
+  }))
+}
+
+const { data: authors } = useAsyncData<Select.Option[]>('authors', getAuthors, {
+  default: () => []
+})
 
 const isLoading = computed<boolean>(() => status.value === 'pending')
 
@@ -67,7 +94,7 @@ watch(
   { immediate: true }
 )
 
-watch([filterOption, authorName], () => {
+watch([selectedSorting, selectedAuthorId], () => {
   page.value = 1
 })
 
@@ -89,14 +116,15 @@ const handlePageChange = (pageNumber: number) => {
       <div class="articles__top">
         <h2 class="articles__title">Почитайте наши классные статьи</h2>
         <div class="articles__filters">
-          <UiInput
-            id="author-name"
-            v-model="authorName"
-            placeholder="Поиск по автору"
-            name="author-name"
-            :mods="['small', 'dsad', '32131']"
-          />
-          <UiSelect v-model="filterOption" :options="selectOptions" />
+          <UiSelect v-model="selectedAuthor" :options="authors" placeholder="Поиск по автору" />
+          <!--          <UiInput-->
+          <!--            id="author-name"-->
+          <!--            v-model="authorName"-->
+          <!--            placeholder="Поиск по автору"-->
+          <!--            name="author-name"-->
+          <!--            :mods="['small', 'dsad', '32131']"-->
+          <!--          />-->
+          <UiSelect v-model="selectedSorting" :options="selectOptions" />
         </div>
       </div>
       <ul class="articles__list">
@@ -112,7 +140,7 @@ const handlePageChange = (pageNumber: number) => {
         </template>
       </ul>
       <UiPagination
-        v-if="status === 'success'"
+        v-if="status === 'success' && totalPage > 1"
         :current-page="page"
         :total-page="totalPage"
         @click="handlePageChange"
