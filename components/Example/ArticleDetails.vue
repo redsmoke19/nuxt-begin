@@ -2,19 +2,19 @@
 import formatDate from '~/utils/formatDate'
 import type { Articles } from '@/types'
 
-defineProps<{ article: Articles.ArticleWithAuthor | null }>()
+defineProps<Articles.ArticleWithAuthor>()
 </script>
 
 <template>
   <div class="article">
-    <h2 class="article__title">{{ article?.title }}</h2>
-    <p class="article__description">{{ article?.description }}</p>
-    <p class="article__content">{{ article?.content }}</p>
+    <h2 class="article__title">{{ title }}</h2>
+    <p class="article__description">{{ description }}</p>
+    <p class="article__content">{{ content }}</p>
     <div class="article__author">
-      <img class="article__author-photo" :src="article?.author.photo" alt="Фотография автора" data-not-lazy />
+      <img class="article__author-photo" :src="author.photo" alt="Фотография автора" data-not-lazy />
       <div class="article__author-inner">
-        <span class="article__author-name">{{ article?.author.name }}</span>
-        <span class="article__date">{{ formatDate(article?.created_at) }}</span>
+        <span class="article__author-name">{{ author.name }}</span>
+        <span class="article__date">{{ formatDate(created_at) }}</span>
       </div>
     </div>
   </div>

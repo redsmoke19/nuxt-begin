@@ -1,27 +1,47 @@
 <script setup lang="ts">
 import { createError } from '#app'
-import type { Articles } from '~/types'
+import type { Articles } from '@/types'
 
 const config = useRuntimeConfig()
 
-const { id } = useRoute().params
+const route = useRoute()
+const id = route.params.id as string
 
-const { data: articleData } = await useAsyncData<Articles.ArticleWithAuthor[] | null>('article', () => {
-  return $fetch(`${config.public.apiUrl}/articles?_relations=authors&id=${id}`)
+const getArticleById = async (id: string): Promise<Articles.ArticleWithAuthor> => {
+  const article = await $fetch<Articles.ArticleWithAuthor>(`${config.public.apiUrl}/articles/${id}`, {
+    params: {
+      _relations: 'authors'
+    }
+  })
+  return article
+}
+
+const { data: articleData, error } = useAsyncData<Articles.ArticleWithAuthor>('article', () => getArticleById(id), {
+  default: () => null
 })
+
+watch(
+  error,
+  () => {
+    if (error.value) {
+      throw createError({ statusCode: 404, statusMessage: 'Такой страницы не существует', fatal: true })
+    }
+  },
+  { immediate: true }
+)
 
 // NOTE: Изначально хоть даже я хочу получить одну статью, они приходит как массив. Поэтому тут я и одного элемента массива делаю просто объект
-const article = computed<Articles.ArticleWithAuthor | null>(() => {
-  if (!articleData.value) {
-    return null
-  }
-  const [articleObject] = articleData.value
-  return articleObject
-})
+// const article = computed<Articles.ArticleWithAuthor | null>(() => {
+//   if (!articleData.value) {
+//     return null
+//   }
+//   const [articleObject] = articleData.value
+//   return articleObject
+// })
 
-if (!article.value) {
-  throw createError({ statusCode: 404, statusMessage: 'Такой страницы не существует', fatal: true })
-}
+// if (!article.value) {
+//   throw createError({ statusCode: 404, statusMessage: 'Такой страницы не существует', fatal: true })
+// }
 
 const breadcrumbs = [
   {
@@ -34,15 +54,15 @@ const breadcrumbs = [
   },
   {
     active: true,
-    text: article?.value.title
+    text: articleData?.value?.title ?? ''
   }
 ]
 </script>
 
 <template>
-  <BaseContainer>
+  <BaseContainer v-if="articleData">
     <UiBreadcrumbs :breadcrumbs="breadcrumbs" />
-    <ExampleArticleDetails :article="article" />
+    <ExampleArticleDetails v-bind="articleData" />
   </BaseContainer>
 </template>
 
